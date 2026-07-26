@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KoraHealth.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(KoraHealthDbContext))]
-    [Migration("20260726135506_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260726212008_RenameWaterDateColumns")]
+    partial class RenameWaterDateColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,61 +29,74 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_users");
 
-                    b.ToTable("Users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("KoraHealth.Domain.Models.WaterEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AmountMl")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("amount_ml");
 
-                    b.Property<DateTime>("LoggedAtUtc")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_created");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_water_entries");
 
-                    b.ToTable("WaterEntries");
+                    b.ToTable("water_entries", (string)null);
                 });
 
             modelBuilder.Entity("KoraHealth.Domain.Models.WaterGoal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DailyGoalMl")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("daily_goal_ml");
 
-                    b.Property<DateTime>("UpdatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_updated");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_water_goals");
 
-                    b.ToTable("WaterGoals");
+                    b.ToTable("water_goals", (string)null);
                 });
 #pragma warning restore 612, 618
         }

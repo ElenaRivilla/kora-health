@@ -13,46 +13,46 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Username = table.Column<string>(type: "text", nullable: false)
+                    username = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("pk_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "WaterEntries",
+                name: "water_entries",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    AmountMl = table.Column<int>(type: "integer", nullable: false),
-                    LoggedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    amount_ml = table.Column<int>(type: "integer", nullable: false),
+                    logged_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WaterEntries", x => x.Id);
+                    table.PrimaryKey("pk_water_entries", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "WaterGoals",
+                name: "water_goals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    DailyGoalMl = table.Column<int>(type: "integer", nullable: false),
-                    UpdatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    daily_goal_ml = table.Column<int>(type: "integer", nullable: false),
+                    updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WaterGoals", x => x.Id);
+                    table.PrimaryKey("pk_water_goals", x => x.id);
                 });
         }
 
@@ -60,13 +60,13 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "users");
 
             migrationBuilder.DropTable(
-                name: "WaterEntries");
+                name: "water_entries");
 
             migrationBuilder.DropTable(
-                name: "WaterGoals");
+                name: "water_goals");
         }
     }
 }

@@ -26,13 +26,13 @@ public class WaterTrackingRepository : IWaterTrackingRepository
             {
                 UserId = userId,
                 DailyGoalMl = dailyGoalMl,
-                UpdatedAtUtc = DateTime.UtcNow
+                DateUpdated = DateTime.UtcNow
             });
         }
         else
         {
             goal.DailyGoalMl = dailyGoalMl;
-            goal.UpdatedAtUtc = DateTime.UtcNow;
+            goal.DateUpdated = DateTime.UtcNow;
         }
 
         await _db.SaveChangesAsync();
@@ -44,7 +44,7 @@ public class WaterTrackingRepository : IWaterTrackingRepository
         {
             UserId = userId,
             AmountMl = amountMl,
-            LoggedAtUtc = DateTime.UtcNow
+            DateCreated = DateTime.UtcNow
         };
         _db.WaterEntries.Add(entry);
         await _db.SaveChangesAsync();
@@ -53,7 +53,7 @@ public class WaterTrackingRepository : IWaterTrackingRepository
 
     public Task<List<WaterEntry>> GetEntriesSinceAsync(int userId, DateTime sinceUtc) =>
         _db.WaterEntries
-            .Where(e => e.UserId == userId && e.LoggedAtUtc >= sinceUtc)
-            .OrderByDescending(e => e.LoggedAtUtc)
+            .Where(e => e.UserId == userId && e.DateCreated >= sinceUtc)
+            .OrderByDescending(e => e.DateCreated)
             .ToListAsync();
 }

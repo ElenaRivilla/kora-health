@@ -70,9 +70,7 @@ cd kora-health-api/src/Application
 dotnet run
 ```
 
-Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el usuario de prueba fijo si no existe. Por defecto escucha en `http://localhost:5020` (perfil `http` en `launchSettings.json`).
-
-Con el perfil `http`/`https` y `ASPNETCORE_ENVIRONMENT=Development`, se abre automáticamente el navegador en la UI interactiva de **Scalar** (`/scalar/v1`) para probar los endpoints sin necesidad de Postman/curl.
+Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el usuario de prueba fijo si no existe. Por defecto escucha en `http://localhost:5001` (perfil `Development` en `launchSettings.json`). Se abre automáticamente el navegador en la UI interactiva de **Scalar** (`/scalar/v1`) para probar los endpoints sin necesidad de Postman/curl.
 
 ## Cliente (`kora-health-client`)
 
@@ -93,13 +91,13 @@ La URL de la API se pasa por variable de entorno de compilación (`API_BASE_URL`
 
 | Destino | Comando | URL de la API |
 |---|---|---|
-| Chrome | `flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:5299` | `localhost` funciona tal cual |
-| Edge | `flutter run -d edge --dart-define=API_BASE_URL=http://localhost:5299` | `localhost` funciona tal cual |
-| Otro navegador (p. ej. Opera GX) | `flutter run -d web-server --web-port=8080 --dart-define=API_BASE_URL=http://localhost:5299` y luego abrir `http://localhost:8080` manualmente en ese navegador | `localhost` funciona tal cual |
-| Emulador Android | `flutter run -d emulator-5554 --dart-define=API_BASE_URL=http://10.0.2.2:5299` | **`10.0.2.2`**, no `localhost` — el emulador tiene su propia red virtual y `10.0.2.2` es la dirección especial que apunta al `localhost` de la máquina anfitriona |
-| Windows desktop | `flutter run -d windows --dart-define=API_BASE_URL=http://localhost:5299` | `localhost` funciona, pero requiere el workload "Desktop development with C++" de Visual Studio instalado (no incluido por defecto) |
+| Chrome | `flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona tal cual |
+| Edge | `flutter run -d edge --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona tal cual |
+| Otro navegador (p. ej. Opera GX) | `flutter run -d web-server --web-port=8080 --dart-define=API_BASE_URL=http://localhost:5001` y luego abrir `http://localhost:8080` manualmente en ese navegador | `localhost` funciona tal cual |
+| Emulador Android | `flutter run -d emulator-5554 --dart-define=API_BASE_URL=http://10.0.2.2:5001` | **`10.0.2.2`**, no `localhost` — el emulador tiene su propia red virtual y `10.0.2.2` es la dirección especial que apunta al `localhost` de la máquina anfitriona |
+| Windows desktop | `flutter run -d windows --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona, pero requiere el workload "Desktop development with C++" de Visual Studio instalado (no incluido por defecto) |
 
-Ajusta el puerto (`5299`/`5020`) al que realmente esté escuchando tu instancia de `dotnet run`.
+Ajusta el puerto al que realmente esté escuchando tu instancia de `dotnet run`.
 
 ### Ver la lista de dispositivos/emuladores disponibles
 

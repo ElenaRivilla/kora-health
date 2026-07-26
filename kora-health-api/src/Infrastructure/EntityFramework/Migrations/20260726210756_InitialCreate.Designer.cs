@@ -3,6 +3,7 @@ using System;
 using KoraHealth.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KoraHealth.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(KoraHealthDbContext))]
-    partial class KoraHealthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260726210756_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,9 +58,9 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("amount_ml");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("LoggedAtUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_created");
+                        .HasColumnName("logged_at_utc");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -82,9 +85,9 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("daily_goal_ml");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_updated");
+                        .HasColumnName("updated_at_utc");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")

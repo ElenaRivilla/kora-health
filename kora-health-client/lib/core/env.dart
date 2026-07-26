@@ -3,6 +3,6 @@
 class Env {
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:5299',
+    defaultValue: 'http://localhost:5001',
   );
 }

@@ -12,8 +12,7 @@ public class AutoMapperProfile : Profile
         CreateMap<SetWaterGoalRq, WaterGoal>();
         CreateMap<LogWaterRq, WaterEntry>();
 
-        CreateMap<WaterGoal, WaterGoalRs>()
-            .ForMember(x => x.UpdatedAt, y => y.MapFrom(src => src.UpdatedAtUtc));
+        CreateMap<WaterGoal, WaterGoalRs>();
         CreateMap<WaterEntry, WaterEntryRs>();
         CreateMap<WaterHistoryDay, WaterHistoryDayRs>();
     }

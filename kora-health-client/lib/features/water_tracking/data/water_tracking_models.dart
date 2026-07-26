@@ -1,26 +1,26 @@
 class WaterGoal {
   final int dailyGoalMl;
-  final DateTime updatedAt;
+  final DateTime dateUpdated;
 
-  WaterGoal({required this.dailyGoalMl, required this.updatedAt});
+  WaterGoal({required this.dailyGoalMl, required this.dateUpdated});
 
   factory WaterGoal.fromJson(Map<String, dynamic> json) => WaterGoal(
         dailyGoalMl: json['dailyGoalMl'] as int,
-        updatedAt: DateTime.parse(json['updatedAt'] as String),
+        dateUpdated: DateTime.parse(json['dateUpdated'] as String),
       );
 }
 
 class WaterEntry {
   final int id;
   final int amountMl;
-  final DateTime loggedAtUtc;
+  final DateTime dateCreated;
 
-  WaterEntry({required this.id, required this.amountMl, required this.loggedAtUtc});
+  WaterEntry({required this.id, required this.amountMl, required this.dateCreated});
 
   factory WaterEntry.fromJson(Map<String, dynamic> json) => WaterEntry(
         id: json['id'] as int,
         amountMl: json['amountMl'] as int,
-        loggedAtUtc: DateTime.parse(json['loggedAtUtc'] as String),
+        dateCreated: DateTime.parse(json['dateCreated'] as String),
       );
 }
 

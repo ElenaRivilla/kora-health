@@ -21,7 +21,7 @@ public class WaterTrackingService : IWaterTrackingService
         return new WaterGoal
         {
             DailyGoalMl = goal.DailyGoalMl,
-            UpdatedAtUtc = goal.UpdatedAtUtc
+            DateUpdated = goal.DateUpdated
         };
     }
 
@@ -33,7 +33,7 @@ public class WaterTrackingService : IWaterTrackingService
         return new WaterGoal
         {
             DailyGoalMl = updated!.DailyGoalMl,
-            UpdatedAtUtc = updated.UpdatedAtUtc
+            DateUpdated = updated.DateUpdated
         };
     }
 
@@ -45,7 +45,7 @@ public class WaterTrackingService : IWaterTrackingService
         {
             Id = saved.Id,
             AmountMl = saved.AmountMl,
-            LoggedAtUtc = saved.LoggedAtUtc
+            DateCreated = saved.DateCreated
         };
     }
 
@@ -56,7 +56,7 @@ public class WaterTrackingService : IWaterTrackingService
         var goal = await _waterTrackingRepository.GetGoalAsync(userId);
 
         return entries
-            .GroupBy(e => DateOnly.FromDateTime(e.LoggedAtUtc))
+            .GroupBy(e => DateOnly.FromDateTime(e.DateCreated))
             .Select(g => new WaterHistoryDay
             {
                 Date = g.Key,

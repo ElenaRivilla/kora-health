@@ -21,6 +21,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<KoraHealthDbContext>();
     await db.Database.MigrateAsync();
 
+    // Seed the database with a fixed test user if it doesn't exist
     if (!await db.Users.AnyAsync(u => u.Id == FixedTestUser.Id))
     {
         db.Users.Add(new User { Id = FixedTestUser.Id, Username = FixedTestUser.Username });
