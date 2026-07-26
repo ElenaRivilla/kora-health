@@ -1,33 +1,32 @@
 # progress Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Agregar la evolución del usuario en salud, nutrición y entrenamientos en tendencias, comparaciones, informes y resúmenes personalizados generados por IA.
 ## Requirements
-### Requirement: Aggregated Evolution View
-The system SHALL present the user's evolution across weight, body composition, nutrition, and sports/workout performance by aggregating data from the `health`, `nutrition-log`, `nutrition-goals`, and `workouts` capabilities.
+### Requirement: Vista Agregada de Evolución
+El sistema SHALL presentar la evolución del usuario en peso, composición corporal, nutrición y rendimiento deportivo/de entrenamiento, agregando datos de las capacidades `health`, `nutrition-log`, `nutrition-goals` y `workouts`.
 
-#### Scenario: Viewing overall evolution
-- **WHEN** the user opens the progress view
-- **THEN** the system displays evolution data for weight, body composition, nutrition, and workouts over a selectable time range
+#### Escenario: Consultar la evolución general
+- **CUANDO** el usuario abre la vista de progreso
+- **ENTONCES** el sistema muestra los datos de evolución de peso, composición corporal, nutrición y entrenamientos en un rango de tiempo seleccionable
 
-### Requirement: Trends and Comparisons
-The system SHALL compute trends over the user's historical data and SHALL allow comparison between different time periods.
+### Requirement: Tendencias y Comparaciones
+El sistema SHALL calcular tendencias sobre los datos históricos del usuario y SHALL permitir comparar diferentes periodos de tiempo.
 
-#### Scenario: Comparing two periods
-- **WHEN** the user selects two time periods to compare
-- **THEN** the system displays the trend and difference between the two periods for the selected metric
+#### Escenario: Comparar dos periodos
+- **CUANDO** el usuario selecciona dos periodos de tiempo para comparar
+- **ENTONCES** el sistema muestra la tendencia y la diferencia entre ambos periodos para la métrica seleccionada
 
-### Requirement: Progress Reports
-The system SHALL generate reports summarizing the user's progress over a selected time range.
+### Requirement: Informes de Progreso
+El sistema SHALL generar informes que resuman el progreso del usuario en un rango de tiempo seleccionado.
 
-#### Scenario: Report generated
-- **WHEN** the user requests a progress report for a time range
-- **THEN** the system produces a report covering the relevant metrics for that range
+#### Escenario: Informe generado
+- **CUANDO** el usuario solicita un informe de progreso para un rango de tiempo
+- **ENTONCES** el sistema genera un informe que cubre las métricas relevantes de ese rango
 
-### Requirement: AI-Generated Progress Summaries
-The system SHALL use AI to generate personalized summaries and recommendations based on the user's aggregated progress data.
+### Requirement: Resúmenes de Progreso Generados por IA
+El sistema SHALL usar IA para generar resúmenes y recomendaciones personalizados basados en los datos de progreso agregados del usuario.
 
-#### Scenario: Summary generated
-- **WHEN** the user requests a progress summary
-- **THEN** the system returns an AI-generated summary and recommendations based on the user's recent progress data
-
+#### Escenario: Resumen generado
+- **CUANDO** el usuario solicita un resumen de progreso
+- **ENTONCES** el sistema devuelve un resumen y recomendaciones generados por IA basados en los datos de progreso recientes del usuario

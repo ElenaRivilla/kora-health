@@ -1,47 +1,46 @@
 # profile Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Permitir al usuario gestionar sus datos personales, objetivos, nivel de actividad, configuración de calorías/macros, preferencia de sincronización con HealthKit, notificaciones, preferencias y cuenta.
 ## Requirements
-### Requirement: Personal Data Management
-The system SHALL allow the user to view and edit their personal data.
+### Requirement: Gestión de Datos Personales
+El sistema SHALL permitir al usuario ver y editar sus datos personales.
 
-#### Scenario: Personal data updated
-- **WHEN** the user edits their personal data and saves
-- **THEN** the system persists the updated values against the user's account
+#### Escenario: Datos personales actualizados
+- **CUANDO** el usuario edita sus datos personales y guarda
+- **ENTONCES** el sistema persiste los valores actualizados asociados a la cuenta del usuario
 
-### Requirement: Goals and Activity Level Configuration
-The system SHALL allow the user to configure their goals and activity level.
+### Requirement: Configuración de Objetivos y Nivel de Actividad
+El sistema SHALL permitir al usuario configurar sus objetivos y su nivel de actividad.
 
-#### Scenario: Activity level set
-- **WHEN** the user selects an activity level and a goal
-- **THEN** the system stores these settings and makes them available to other capabilities that depend on them (e.g. `nutrition-goals`)
+#### Escenario: Nivel de actividad establecido
+- **CUANDO** el usuario selecciona un nivel de actividad y un objetivo
+- **ENTONCES** el sistema almacena esta configuración y la pone a disposición de otras capacidades que dependen de ella (p. ej. `nutrition-goals`)
 
-### Requirement: Calorie and Macronutrient Configuration
-The system SHALL allow the user to configure their calorie and macronutrient settings from their profile.
+### Requirement: Configuración de Calorías y Macronutrientes
+El sistema SHALL permitir al usuario configurar sus ajustes de calorías y macronutrientes desde su perfil.
 
-#### Scenario: Configuration updated from profile
-- **WHEN** the user updates their calorie or macronutrient configuration in the profile
-- **THEN** the system persists the change and it is reflected in `nutrition-goals`
+#### Escenario: Configuración actualizada desde el perfil
+- **CUANDO** el usuario actualiza su configuración de calorías o macronutrientes en el perfil
+- **ENTONCES** el sistema persiste el cambio y este se refleja en `nutrition-goals`
 
-### Requirement: HealthKit Sync Preference
-The system SHALL allow the user to enable or disable HealthKit synchronization from their profile.
+### Requirement: Preferencia de Sincronización con HealthKit
+El sistema SHALL permitir al usuario activar o desactivar la sincronización con HealthKit desde su perfil.
 
-#### Scenario: Sync toggled off
-- **WHEN** the user disables HealthKit synchronization in their profile
-- **THEN** the system stores the preference so that `healthkit-integration` stops reading HealthKit data for that user
+#### Escenario: Sincronización desactivada
+- **CUANDO** el usuario desactiva la sincronización con HealthKit en su perfil
+- **ENTONCES** el sistema almacena la preferencia para que `healthkit-integration` deje de leer datos de HealthKit para ese usuario
 
-### Requirement: Notifications and Preferences
-The system SHALL allow the user to configure notification and general preference settings.
+### Requirement: Notificaciones y Preferencias
+El sistema SHALL permitir al usuario configurar los ajustes de notificaciones y preferencias generales.
 
-#### Scenario: Notification preference changed
-- **WHEN** the user disables a notification category
-- **THEN** the system stops sending notifications of that category to the user
+#### Escenario: Preferencia de notificación modificada
+- **CUANDO** el usuario desactiva una categoría de notificaciones
+- **ENTONCES** el sistema deja de enviar notificaciones de esa categoría a ese usuario
 
-### Requirement: Account Management
-The system SHALL allow the user to manage their account, including account-level settings tied to their identity in the system.
+### Requirement: Gestión de Cuenta
+El sistema SHALL permitir al usuario gestionar su cuenta, incluyendo los ajustes a nivel de cuenta vinculados a su identidad en el sistema.
 
-#### Scenario: Account settings viewed
-- **WHEN** the user opens account settings
-- **THEN** the system displays the account information tied to their identity
-
+#### Escenario: Ajustes de cuenta consultados
+- **CUANDO** el usuario abre los ajustes de cuenta
+- **ENTONCES** el sistema muestra la información de la cuenta vinculada a su identidad

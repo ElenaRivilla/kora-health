@@ -1,26 +1,25 @@
 # health Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Registrar y visualizar las métricas de salud del usuario (peso, IMC, grasa corporal, masa muscular, frecuencia cardíaca, HRV, SpO2, sueño, pasos, distancia, calorías, VO2 máx) sincronizadas desde Apple HealthKit, incluyendo tendencias históricas a lo largo del tiempo.
 ## Requirements
-### Requirement: Health Metrics Tracking
-The system SHALL store and display the following health metrics for the user: weight, BMI, body fat percentage, muscle mass, heart rate, heart rate variability (HRV), blood oxygen saturation (SpO2), sleep, daily steps, distance traveled, active calories, resting calories, and VO2 max.
+### Requirement: Registro de Métricas de Salud
+El sistema SHALL almacenar y mostrar las siguientes métricas de salud del usuario: peso, IMC, porcentaje de grasa corporal, masa muscular, frecuencia cardíaca, variabilidad de la frecuencia cardíaca (HRV), saturación de oxígeno en sangre (SpO2), sueño, pasos diarios, distancia recorrida, calorías activas, calorías en reposo, y VO2 máx.
 
-#### Scenario: Metrics available after sync
-- **WHEN** health data has been synchronized for the user
-- **THEN** the user can view current values for each supported metric
+#### Escenario: Métricas disponibles tras la sincronización
+- **CUANDO** se han sincronizado datos de salud para el usuario
+- **ENTONCES** el usuario puede ver los valores actuales de cada métrica soportada
 
-### Requirement: Health Metrics History and Evolution
-The system SHALL keep a historical record of each health metric and SHALL present that history as charts showing evolution over time.
+### Requirement: Historial y Evolución de Métricas de Salud
+El sistema SHALL mantener un registro histórico de cada métrica de salud y SHALL presentar ese historial como gráficas que muestren la evolución a lo largo del tiempo.
 
-#### Scenario: Viewing metric history
-- **WHEN** the user opens the history view for a given metric
-- **THEN** the system displays a chart of that metric's values over time built from stored historical records
+#### Escenario: Consultar el historial de una métrica
+- **CUANDO** el usuario abre la vista de historial de una métrica concreta
+- **ENTONCES** el sistema muestra una gráfica con los valores de esa métrica a lo largo del tiempo, construida a partir de los registros históricos almacenados
 
-### Requirement: Health Data Ingestion
-The system SHALL accept health metric data submitted by the mobile client and persist it against the corresponding user.
+### Requirement: Ingesta de Datos de Salud
+El sistema SHALL aceptar datos de métricas de salud enviados por el cliente móvil y persistirlos asociados al usuario correspondiente.
 
-#### Scenario: New metric values received
-- **WHEN** the mobile client submits new health metric values for the user
-- **THEN** the system stores the values and associates them with the correct metric type, timestamp, and user
-
+#### Escenario: Nuevos valores de métrica recibidos
+- **CUANDO** el cliente móvil envía nuevos valores de métricas de salud para el usuario
+- **ENTONCES** el sistema almacena los valores y los asocia con el tipo de métrica, la marca de tiempo y el usuario correctos

@@ -1,26 +1,25 @@
 # nutrition-goals Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Permitir al usuario configurar objetivos diarios de calorías y macronutrientes, y calcular un score nutricional diario frente a esos objetivos con una explicación y recomendaciones generadas por IA.
 ## Requirements
-### Requirement: Configurable Daily Nutrition Targets
-The system SHALL allow the user to configure daily targets for calories, protein, carbohydrates, fat, fiber, sugar, and sodium.
+### Requirement: Objetivos Nutricionales Diarios Configurables
+El sistema SHALL permitir al usuario configurar objetivos diarios de calorías, proteínas, carbohidratos, grasas, fibra, azúcar y sodio.
 
-#### Scenario: Targets saved
-- **WHEN** the user sets a daily calorie and macronutrient target
-- **THEN** the system stores the targets and uses them to evaluate subsequent days
+#### Escenario: Objetivos guardados
+- **CUANDO** el usuario establece un objetivo diario de calorías y macronutrientes
+- **ENTONCES** el sistema almacena los objetivos y los usa para evaluar los días siguientes
 
-### Requirement: Daily Nutrition Score
-The system SHALL calculate a daily nutrition score based on the quality of the user's logged food intake for that day, compared against the user's configured targets.
+### Requirement: Score Nutricional Diario
+El sistema SHALL calcular un score nutricional diario basado en la calidad de la ingesta de alimentos registrada por el usuario ese día, comparada con los objetivos configurados por el usuario.
 
-#### Scenario: Score available after logging
-- **WHEN** the user has logged meals for the current day
-- **THEN** the system computes a nutrition score for that day
+#### Escenario: Score disponible tras registrar comidas
+- **CUANDO** el usuario ha registrado comidas para el día actual
+- **ENTONCES** el sistema calcula un score nutricional para ese día
 
-### Requirement: AI Explanation and Recommendations for Nutrition Score
-The system SHALL use AI to explain the reasoning behind a given day's nutrition score and to offer recommendations for improvement.
+### Requirement: Explicación y Recomendaciones de IA para el Score Nutricional
+El sistema SHALL usar IA para explicar el razonamiento detrás del score nutricional de un día concreto y ofrecer recomendaciones de mejora.
 
-#### Scenario: Explanation requested
-- **WHEN** the user requests an explanation for a day's nutrition score
-- **THEN** the system returns an AI-generated explanation and at least one recommendation based on that day's logged intake
-
+#### Escenario: Explicación solicitada
+- **CUANDO** el usuario solicita una explicación del score nutricional de un día
+- **ENTONCES** el sistema devuelve una explicación generada por IA y al menos una recomendación basada en la ingesta registrada ese día

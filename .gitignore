@@ -1,1 +1,14 @@
 .claude
+.vs
+bin/
+obj/
+*.user
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+**/ios/Pods/
+**/android/.gradle/
+.idea/
+.DS_Store
+Thumbs.db

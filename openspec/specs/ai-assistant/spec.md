@@ -1,47 +1,46 @@
 # ai-assistant Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Proporcionar las capacidades de IA transversales usadas en toda la app: reconocimiento de alimentos y estimación de cantidades a partir de imágenes, explicación del score nutricional, recomendaciones dietéticas y deportivas, análisis de tendencias, resúmenes personalizados, y preguntas y respuestas contextuales sobre los datos del usuario — todo procesado por el backend.
 ## Requirements
-### Requirement: Image-Based Food Recognition
-The system SHALL use AI to recognize foods present in an image submitted by the user and SHALL estimate the quantity of each recognized food.
+### Requirement: Reconocimiento de Alimentos a partir de Imágenes
+El sistema SHALL usar IA para reconocer los alimentos presentes en una imagen enviada por el usuario y SHALL estimar la cantidad de cada alimento reconocido.
 
-#### Scenario: Foods and quantities returned
-- **WHEN** an image of a meal is submitted for recognition
-- **THEN** the system returns a list of recognized foods, each with an estimated quantity
+#### Escenario: Alimentos y cantidades devueltos
+- **CUANDO** se envía una imagen de una comida para su reconocimiento
+- **ENTONCES** el sistema devuelve una lista de alimentos reconocidos, cada uno con una cantidad estimada
 
-### Requirement: Nutrition Score Explanation and Recommendations
-The system SHALL use AI to explain a user's nutrition score and generate dietary recommendations based on their logged intake.
+### Requirement: Explicación del Score Nutricional y Recomendaciones
+El sistema SHALL usar IA para explicar el score nutricional de un usuario y generar recomendaciones dietéticas basadas en su ingesta registrada.
 
-#### Scenario: Explanation with recommendations
-- **WHEN** a request for nutrition score explanation is received for a given day
-- **THEN** the system returns an explanation of the score together with at least one dietary recommendation
+#### Escenario: Explicación con recomendaciones
+- **CUANDO** se recibe una solicitud de explicación del score nutricional para un día concreto
+- **ENTONCES** el sistema devuelve una explicación del score junto con al menos una recomendación dietética
 
-### Requirement: Sports Recommendations
-The system SHALL use AI to generate sports/training recommendations based on the user's workout history and goals.
+### Requirement: Recomendaciones Deportivas
+El sistema SHALL usar IA para generar recomendaciones deportivas/de entrenamiento basadas en el historial de entrenamientos y los objetivos del usuario.
 
-#### Scenario: Recommendation generated
-- **WHEN** a request for a sports recommendation is received for a user
-- **THEN** the system returns a recommendation informed by that user's workout history and goals
+#### Escenario: Recomendación generada
+- **CUANDO** se recibe una solicitud de recomendación deportiva para un usuario
+- **ENTONCES** el sistema devuelve una recomendación basada en el historial de entrenamientos y los objetivos de ese usuario
 
-### Requirement: Trend Analysis and Personalized Summaries
-The system SHALL use AI to analyze trends in the user's data and generate personalized summaries.
+### Requirement: Análisis de Tendencias y Resúmenes Personalizados
+El sistema SHALL usar IA para analizar tendencias en los datos del usuario y generar resúmenes personalizados.
 
-#### Scenario: Trend summary generated
-- **WHEN** a request for a trend summary is received for a user
-- **THEN** the system returns an AI-generated summary describing notable trends in that user's data
+#### Escenario: Resumen de tendencias generado
+- **CUANDO** se recibe una solicitud de resumen de tendencias para un usuario
+- **ENTONCES** el sistema devuelve un resumen generado por IA que describe tendencias relevantes en los datos de ese usuario
 
-### Requirement: Contextual Question Answering
-The system SHALL allow the user to ask free-form questions and SHALL answer them using the full context of that user's stored data.
+### Requirement: Preguntas y Respuestas Contextuales
+El sistema SHALL permitir al usuario hacer preguntas en formato libre y SHALL responderlas usando el contexto completo de los datos almacenados de ese usuario.
 
-#### Scenario: Question answered with user context
-- **WHEN** the user asks a question about their own data
-- **THEN** the system generates an answer using that user's relevant stored data as context
+#### Escenario: Pregunta respondida con el contexto del usuario
+- **CUANDO** el usuario hace una pregunta sobre sus propios datos
+- **ENTONCES** el sistema genera una respuesta usando los datos almacenados relevantes de ese usuario como contexto
 
-### Requirement: AI Processing Handled by Backend
-The system SHALL process all AI requests on the backend, which SHALL forward the request (image, question, or context) to the corresponding AI provider and return the response to the client.
+### Requirement: Procesamiento de IA Gestionado por el Backend
+El sistema SHALL procesar todas las solicitudes de IA en el backend, el cual SHALL reenviar la solicitud (imagen, pregunta o contexto) al proveedor de IA correspondiente y devolver la respuesta al cliente.
 
-#### Scenario: Client never calls AI provider directly
-- **WHEN** the Flutter client needs an AI-powered result
-- **THEN** it sends the required images, questions, or context to the backend, and the backend is the component that communicates with the AI provider
-
+#### Escenario: El cliente nunca llama directamente al proveedor de IA
+- **CUANDO** el cliente Flutter necesita un resultado generado por IA
+- **ENTONCES** envía las imágenes, preguntas o contexto necesarios al backend, y es el backend el componente que se comunica con el proveedor de IA

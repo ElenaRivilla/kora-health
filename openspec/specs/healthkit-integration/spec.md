@@ -1,26 +1,25 @@
 # healthkit-integration Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Definir las reglas arquitectónicas de cómo entran en el sistema los datos de Apple HealthKit: leídos exclusivamente por el cliente Flutter, nunca accedidos directamente por el backend, y reenviados a la API solo cuando el usuario lo ha activado.
 ## Requirements
-### Requirement: HealthKit Access Restricted to Mobile Client
-The system SHALL access Apple HealthKit exclusively from the Flutter mobile application. The backend SHALL NOT access HealthKit directly, under any circumstance.
+### Requirement: Acceso a HealthKit Restringido al Cliente Móvil
+El sistema SHALL acceder a Apple HealthKit exclusivamente desde la aplicación móvil Flutter. El backend SHALL NOT acceder a HealthKit directamente, bajo ninguna circunstancia.
 
-#### Scenario: Backend has no HealthKit access path
-- **WHEN** the backend needs health data originating from HealthKit
-- **THEN** it obtains that data only through requests submitted by the Flutter client, never through a direct HealthKit connection
+#### Escenario: El backend no tiene ninguna vía de acceso a HealthKit
+- **CUANDO** el backend necesita datos de salud originados en HealthKit
+- **ENTONCES** los obtiene únicamente a través de solicitudes enviadas por el cliente Flutter, nunca mediante una conexión directa a HealthKit
 
-### Requirement: HealthKit Data Flow
-The system SHALL move HealthKit data through the fixed path: HealthKit device data is read by the Flutter app, sent to the backend API over HTTP, and persisted in PostgreSQL.
+### Requirement: Flujo de Datos de HealthKit
+El sistema SHALL mover los datos de HealthKit por la ruta fija: los datos del dispositivo HealthKit son leídos por la app Flutter, enviados a la API del backend por HTTP, y persistidos en PostgreSQL.
 
-#### Scenario: HealthKit reading reaches storage
-- **WHEN** the Flutter app reads a new value from HealthKit
-- **THEN** the app sends that value to the backend API, and the backend persists it in PostgreSQL
+#### Escenario: Una lectura de HealthKit llega al almacenamiento
+- **CUANDO** la app Flutter lee un nuevo valor de HealthKit
+- **ENTONCES** la app envía ese valor a la API del backend, y el backend lo persiste en PostgreSQL
 
-### Requirement: User-Controlled HealthKit Sync
-The system SHALL only read HealthKit data when the user has enabled HealthKit synchronization for their account.
+### Requirement: Sincronización de HealthKit Controlada por el Usuario
+El sistema SHALL leer datos de HealthKit únicamente cuando el usuario ha activado la sincronización con HealthKit para su cuenta.
 
-#### Scenario: Sync disabled
-- **WHEN** a user has not enabled HealthKit synchronization
-- **THEN** the Flutter app does not read or send HealthKit data on that user's behalf
-
+#### Escenario: Sincronización desactivada
+- **CUANDO** un usuario no ha activado la sincronización con HealthKit
+- **ENTONCES** la app Flutter no lee ni envía datos de HealthKit en nombre de ese usuario

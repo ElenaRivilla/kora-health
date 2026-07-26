@@ -1,33 +1,32 @@
 # nutrition-log Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Permitir al usuario registrar las comidas diarias (desayuno, comida, cena, snack) con alimentos añadidos manualmente o detectados a partir de fotos mediante IA, y calcular automáticamente las calorías y macronutrientes resultantes.
 ## Requirements
-### Requirement: Daily Meal Diary
-The system SHALL allow the user to record entries under breakfast, lunch, dinner, and snack for each day, and each meal entry SHALL be able to contain one or more foods.
+### Requirement: Diario de Comidas Diario
+El sistema SHALL permitir al usuario registrar entradas bajo desayuno, comida, cena y snack para cada día, y cada entrada de comida SHALL poder contener uno o más alimentos.
 
-#### Scenario: Logging a meal with multiple foods
-- **WHEN** the user adds two foods to today's lunch entry
-- **THEN** the system stores both foods under lunch for that day and both are retrievable when the diary is viewed
+#### Escenario: Registrar una comida con varios alimentos
+- **CUANDO** el usuario añade dos alimentos a la entrada de la comida de hoy
+- **ENTONCES** el sistema almacena ambos alimentos bajo esa comida para ese día, y ambos son recuperables al consultar el diario
 
-### Requirement: Manual Food Entry
-The system SHALL allow the user to add a food to a meal by manually specifying the food and its quantity.
+### Requirement: Entrada Manual de Alimentos
+El sistema SHALL permitir al usuario añadir un alimento a una comida especificando manualmente el alimento y su cantidad.
 
-#### Scenario: Manual entry accepted
-- **WHEN** the user selects a food and enters a quantity manually
-- **THEN** the system adds that food entry to the selected meal
+#### Escenario: Entrada manual aceptada
+- **CUANDO** el usuario selecciona un alimento e introduce una cantidad manualmente
+- **ENTONCES** el sistema añade esa entrada de alimento a la comida seleccionada
 
-### Requirement: Photo-Based Meal Logging
-The system SHALL allow the user to log a meal by taking or uploading a photograph, and SHALL use AI to detect the foods present in that photograph.
+### Requirement: Registro de Comidas Basado en Fotos
+El sistema SHALL permitir al usuario registrar una comida haciendo o subiendo una fotografía, y SHALL usar IA para detectar los alimentos presentes en esa fotografía.
 
-#### Scenario: Foods detected from photo
-- **WHEN** the user submits a meal photo
-- **THEN** the system returns a list of detected foods for the user to confirm before they are added to the meal
+#### Escenario: Alimentos detectados a partir de una foto
+- **CUANDO** el usuario envía una foto de una comida
+- **ENTONCES** el sistema devuelve una lista de alimentos detectados para que el usuario los confirme antes de añadirlos a la comida
 
-### Requirement: Automatic Nutritional Calculation
-For every logged food entry, the system SHALL automatically calculate calories, protein, carbohydrates, fat, fiber, sugar, and sodium.
+### Requirement: Cálculo Nutricional Automático
+Para cada entrada de alimento registrada, el sistema SHALL calcular automáticamente las calorías, proteínas, carbohidratos, grasas, fibra, azúcar y sodio.
 
-#### Scenario: Nutrients calculated on entry
-- **WHEN** a food entry is added to a meal, whether manually or via photo detection
-- **THEN** the system calculates and stores calories, protein, carbohydrates, fat, fiber, sugar, and sodium for that entry
-
+#### Escenario: Nutrientes calculados al registrar
+- **CUANDO** se añade una entrada de alimento a una comida, ya sea manualmente o mediante detección por foto
+- **ENTONCES** el sistema calcula y almacena las calorías, proteínas, carbohidratos, grasas, fibra, azúcar y sodio de esa entrada

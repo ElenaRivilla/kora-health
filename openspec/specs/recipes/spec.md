@@ -1,19 +1,18 @@
 # recipes Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Permitir al usuario guardar recetas propias y reutilizarlas para añadir rápidamente todos sus alimentos a una comida en el diario nutricional.
 ## Requirements
-### Requirement: Save Custom Recipe
-The system SHALL allow the user to create and save a recipe composed of one or more foods with their quantities.
+### Requirement: Guardar Receta Propia
+El sistema SHALL permitir al usuario crear y guardar una receta compuesta por uno o más alimentos con sus cantidades.
 
-#### Scenario: Recipe saved
-- **WHEN** the user creates a recipe with a name and a list of foods with quantities
-- **THEN** the system stores the recipe under that user's account for later reuse
+#### Escenario: Receta guardada
+- **CUANDO** el usuario crea una receta con un nombre y una lista de alimentos con cantidades
+- **ENTONCES** el sistema almacena la receta en la cuenta de ese usuario para su reutilización posterior
 
-### Requirement: Reuse Saved Recipe
-The system SHALL allow the user to add a saved recipe to a meal in the nutrition diary as a single action, applying all of its foods and quantities.
+### Requirement: Reutilizar Receta Guardada
+El sistema SHALL permitir al usuario añadir una receta guardada a una comida del diario nutricional en una sola acción, aplicando todos sus alimentos y cantidades.
 
-#### Scenario: Adding a saved recipe to a meal
-- **WHEN** the user selects a saved recipe to add to today's dinner
-- **THEN** the system adds all the recipe's foods, with their quantities, to that meal entry
-
+#### Escenario: Añadir una receta guardada a una comida
+- **CUANDO** el usuario selecciona una receta guardada para añadirla a la cena de hoy
+- **ENTONCES** el sistema añade todos los alimentos de la receta, con sus cantidades, a esa entrada de comida

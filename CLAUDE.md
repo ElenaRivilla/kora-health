@@ -15,6 +15,16 @@ This project uses the [OpenSpec](https://github.com/) spec-driven workflow (`sch
 - `openspec/changes/archive/<date>-<slug>/` — completed changes, each with `proposal.md`, `tasks.md`, `design.md`, and the `specs/` diff that was merged into `openspec/specs/`.
 - `openspec/specs/initial/ARQUITECTURA.md` and `FUNCIONALIDADES.md` — the original unstructured notes the first change (`define-initial-specs`) was based on. Their content is now covered by the 11 formal specs; removing this folder was deliberately deferred by the user and is still pending.
 
+### Spec language: Spanish, with English structural keywords
+
+All spec prose (Purpose, requirement/scenario names, requirement bodies, scenario steps) is written in **Spanish** going forward — this applies to new specs and changes too, not just the existing 11. However, the OpenSpec CLI parser hard-requires certain markers to stay in **English** or validation breaks:
+
+- Section headers: `## Purpose`, `## Requirements` (and, for changes, `## Why` / `## What Changes`) — matched case-insensitively but must be these literal English words.
+- `### Requirement: <name>` — the `Requirement:` prefix is literal (case-insensitive); `<name>` itself can be Spanish.
+- The literal word `SHALL` or `MUST` (word-boundary match) somewhere in every requirement's body — `openspec validate --strict` fails otherwise. Embed it directly in the Spanish sentence, RFC-2119 style: `El sistema SHALL permitir...`.
+
+Everything else is free-form and unvalidated: `#### Escenario: <name>` (any level-4 heading under a requirement counts as a scenario, the word "Scenario"/"Escenario" itself isn't checked), and the `- **CUANDO** ... / - **ENTONCES** ...` bullet style used for scenario steps (translated from WHEN/THEN, purely a formatting convention).
+
 When asked to build a feature, start a new OpenSpec change (proposal + tasks + spec deltas) before writing implementation code, following the same structure as `openspec/changes/archive/2026-07-25-define-initial-specs/`. Validate changes with `openspec validate` before archiving.
 
 ### The 11 capabilities and their dependencies

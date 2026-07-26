@@ -1,26 +1,25 @@
 # water-tracking Specification
 
 ## Purpose
-TBD - created by archiving change define-initial-specs. Update Purpose after archive.
+Permitir al usuario establecer un objetivo diario de ingesta de agua, registrar agua rápidamente, y consultar su historial y estadísticas de hidratación.
 ## Requirements
-### Requirement: Daily Water Goal
-The system SHALL allow the user to configure a daily water intake goal.
+### Requirement: Objetivo Diario de Agua
+El sistema SHALL permitir al usuario configurar un objetivo diario de ingesta de agua.
 
-#### Scenario: Goal configured
-- **WHEN** the user sets a daily water goal
-- **THEN** the system stores the goal and uses it to track progress for subsequent days
+#### Escenario: Objetivo configurado
+- **CUANDO** el usuario establece un objetivo diario de agua
+- **ENTONCES** el sistema almacena el objetivo y lo usa para seguir el progreso los días siguientes
 
-### Requirement: Quick Water Logging
-The system SHALL allow the user to log a water intake entry with a minimal number of interactions.
+### Requirement: Registro Rápido de Agua
+El sistema SHALL permitir al usuario registrar una entrada de ingesta de agua con un número mínimo de interacciones.
 
-#### Scenario: Quick log entry
-- **WHEN** the user logs a water intake entry
-- **THEN** the system records the amount against the current day's total immediately
+#### Escenario: Entrada rápida registrada
+- **CUANDO** el usuario registra una entrada de ingesta de agua
+- **ENTONCES** el sistema suma la cantidad al total del día actual de inmediato
 
-### Requirement: Water History and Statistics
-The system SHALL keep a history of daily water intake and SHALL provide statistics derived from that history.
+### Requirement: Historial y Estadísticas de Agua
+El sistema SHALL mantener un historial de la ingesta diaria de agua y SHALL proporcionar estadísticas derivadas de ese historial.
 
-#### Scenario: Viewing water history
-- **WHEN** the user opens the water history view
-- **THEN** the system displays past daily totals and summary statistics
-
+#### Escenario: Consultar el historial de agua
+- **CUANDO** el usuario abre la vista de historial de agua
+- **ENTONCES** el sistema muestra los totales diarios anteriores y estadísticas resumidas
