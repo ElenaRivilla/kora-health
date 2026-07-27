@@ -1,6 +1,6 @@
 using KoraHealth.Application.Mappers;
-using KoraHealth.Application.Services;
-using KoraHealth.Domain.Contracts.Services;
+using KoraHealth.Application.Services.WaterTracking;
+using KoraHealth.Domain.Contracts.Services.WaterTracking;
 
 namespace KoraHealth.Application;
 

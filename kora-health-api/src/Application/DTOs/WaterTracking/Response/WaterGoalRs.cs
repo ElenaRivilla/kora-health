@@ -1,4 +1,4 @@
-namespace KoraHealth.Application.DTOs.Response;
+namespace KoraHealth.Application.DTOs.WaterTracking.Response;
 
 public class WaterGoalRs
 {
