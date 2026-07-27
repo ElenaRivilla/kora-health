@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="src/Application/KoraHealth.Application.csproj" />
-  <Project Path="src/Common/KoraHealth.Common.csproj" />
-  <Project Path="src/Domain/KoraHealth.Domain.csproj" />
-  <Project Path="src/Infrastructure/KoraHealth.Infrastructure.csproj" />
+  <Project Path="src/Application/KoraHealth.Api.Application.csproj" />
+  <Project Path="src/Common/KoraHealth.Api.Common.csproj" />
+  <Project Path="src/Domain/KoraHealth.Api.Domain.csproj" />
+  <Project Path="src/Infrastructure/KoraHealth.Api.Infrastructure.csproj" />
 </Solution>

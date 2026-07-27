@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\KoraHealth.Domain.csproj" />
-    <ProjectReference Include="..\Common\KoraHealth.Common.csproj" />
+    <ProjectReference Include="..\Domain\KoraHealth.Api.Domain.csproj" />
+    <ProjectReference Include="..\Common\KoraHealth.Api.Common.csproj" />
   </ItemGroup>
 
 </Project>
