@@ -1,9 +1,7 @@
-namespace KoraHealth.Domain.Models;
+namespace KoraHealth.Domain.Models.WaterTracking;
 
 public class WaterGoal
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
     public int DailyGoalMl { get; set; }
     public DateTime DateUpdated { get; set; }
 }
