@@ -2,7 +2,7 @@
 
 Kora Health es una app personal de seguimiento de salud, nutrición y entrenamientos: métricas de salud (sincronizadas desde Apple HealthKit), diario nutricional con reconocimiento de alimentos por IA, objetivos de calorías/macros, hidratación, entrenamientos, progreso agregado y un asistente de IA transversal.
 
-El proyecto sigue un flujo **spec-driven** con [OpenSpec](https://github.com/) — las especificaciones funcionales viven en `openspec/specs/` (en español) y son la fuente de verdad de qué se debe construir. Ver `CLAUDE.md` para más detalle sobre esa convención.
+El proyecto sigue un flujo **spec-driven** con [OpenSpec](https://openspec.dev) — las especificaciones funcionales viven en `openspec/specs/` (en español) y son la fuente de verdad de qué se debe construir. Ver `CLAUDE.md` para más detalle sobre esa convención.
 
 **Stack:**
 - **Cliente**: Flutter (Dart), Riverpod (estado), Dio (HTTP), Drift/SQLite (caché local, todavía sin tablas de módulo).
