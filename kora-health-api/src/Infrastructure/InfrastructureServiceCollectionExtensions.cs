@@ -1,4 +1,4 @@
-using KoraHealth.Domain.Contracts.Repositories;
+using KoraHealth.Domain.Contracts.Repositories.WaterTracking;
 using KoraHealth.Infrastructure.EntityFramework;
 using KoraHealth.Infrastructure.Repositories.BBDD;
 using Microsoft.EntityFrameworkCore;

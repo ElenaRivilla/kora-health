@@ -1,12 +1,12 @@
 using AutoMapper;
 using KoraHealth.Application.Authentication;
-using KoraHealth.Application.DTOs.Request;
-using KoraHealth.Application.DTOs.Response;
-using KoraHealth.Domain.Contracts.Services;
-using KoraHealth.Domain.Entities.DTOs;
+using KoraHealth.Application.DTOs.WaterTracking.Request;
+using KoraHealth.Application.DTOs.WaterTracking.Response;
+using KoraHealth.Domain.Contracts.Services.WaterTracking;
+using KoraHealth.Domain.Models.WaterTracking;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KoraHealth.Application.Controllers;
+namespace KoraHealth.Application.Controllers.WaterTracking;
 
 [ApiController]
 [Route("api/water-tracking")]
@@ -33,30 +33,22 @@ public class WaterTrackingController : ControllerBase
     [HttpPut("goal")]
     public async Task<ActionResult<WaterGoalRs>> SetGoal(SetWaterGoalRq rq)
     {
-        if (rq.DailyGoalMl <= 0) return BadRequest("DailyGoalMl must be greater than zero.");
+        if (!rq.IsValid()) return BadRequest("DailyGoalMl must be greater than zero.");
 
-        var domainGoal = _mapper.Map<WaterGoal>(rq);
-        var goal = await _waterTrakingService.SetGoalAsync(CurrentUserId, domainGoal);
-
-        return Ok(_mapper.Map<WaterGoalRs>(goal));
+        return Ok(_mapper.Map<WaterGoalRs>(await _waterTrakingService.SetGoalAsync(CurrentUserId, _mapper.Map<WaterGoal>(rq))));
     }
 
     [HttpPost("entries")]
     public async Task<ActionResult<WaterEntryRs>> LogEntry(LogWaterRq rq)
     {
-        if (rq.AmountMl <= 0) return BadRequest("AmountMl must be greater than zero.");
+        if (!rq.IsValid()) return BadRequest("AmountMl must be greater than zero.");
 
-        var domainEntry = _mapper.Map<WaterEntry>(rq);
-        var entry = await _waterTrakingService.LogEntryAsync(CurrentUserId, domainEntry);
-
-        return Ok(_mapper.Map<WaterEntryRs>(entry));
+        return Ok(_mapper.Map<WaterEntryRs>(await _waterTrakingService.LogEntryAsync(CurrentUserId, _mapper.Map<WaterEntry>(rq))));
     }
 
     [HttpGet("history")]
     public async Task<ActionResult<List<WaterHistoryDayRs>>> GetHistory([FromQuery] int days = 30)
     {
-        var history = await _waterTrakingService.GetHistoryAsync(CurrentUserId, days);
-
-        return Ok(_mapper.Map<List<WaterHistoryDayRs>>(history));
+        return Ok(_mapper.Map<List<WaterHistoryDayRs>>(await _waterTrakingService.GetHistoryAsync(CurrentUserId, days)));
     }
 }

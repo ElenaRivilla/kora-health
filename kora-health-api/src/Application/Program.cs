@@ -1,6 +1,6 @@
 using KoraHealth.Application;
 using KoraHealth.Application.Authentication;
-using KoraHealth.Domain.Models;
+using KoraHealth.Domain.Entities.User;
 using KoraHealth.Infrastructure;
 using KoraHealth.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +24,7 @@ using (var scope = app.Services.CreateScope())
     // Seed the database with a fixed test user if it doesn't exist
     if (!await db.Users.AnyAsync(u => u.Id == FixedTestUser.Id))
     {
-        db.Users.Add(new User { Id = FixedTestUser.Id, Username = FixedTestUser.Username });
+        db.Users.Add(new UserEntity { Id = FixedTestUser.Id, Username = FixedTestUser.Username });
         await db.SaveChangesAsync();
     }
 }
