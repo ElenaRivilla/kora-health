@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+// Global styles: base colours, typography and margin reset.
+// The palette mirrors the deep purple seed the Flutter client used for its theme.
+:root {
+  --color-primary: #65558f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #e9ddff;
+  --color-on-primary-container: #201047;
+  --color-surface: #fdf7ff;
+  --color-surface-container: #f2ecf4;
+  --color-on-surface: #1d1b20;
+  --color-on-surface-variant: #49454e;
+  --color-outline: #7a757f;
+  --color-error: #ba1a1a;
+
+  --font-family-base:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-base);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+// Shown by main.ts when the application cannot start (e.g. the runtime config is missing).
+.startup-error {
+  margin: 2rem 1rem;
+  color: var(--color-error);
+  font-weight: 500;
+}

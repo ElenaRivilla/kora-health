@@ -1,0 +1,24 @@
+<header class="home__header">
+  <h1 class="home__title">{{ title() }}</h1>
+</header>
+
+<nav class="home__nav" aria-label="Secciones">
+  <ul class="home__nav-list">
+    @for (destination of destinations; track destination.path) {
+      <li class="home__nav-item">
+        <a
+          class="home__nav-link"
+          [routerLink]="destination.path"
+          routerLinkActive="home__nav-link--active"
+          ariaCurrentWhenActive="page"
+        >
+          {{ destination.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
+
+<main class="home__content">
+  <router-outlet />
+</main>
