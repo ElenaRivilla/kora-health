@@ -10,8 +10,9 @@ Kora Health is in an **early implementation phase**. Both apps are scaffolded an
 - **Client is Angular**: the original Flutter client was removed; `kora-health-client/` now holds the Angular app. It is a web app designed mobile-first. Reading HealthKit will require packaging it for iOS with Capacitor, which is planned for a later change and not started.
 - **No real authentication yet**: the backend attributes every request to a single seeded user (`FixedTestUser`, id `1`, username `dev-test-user`). The client sends no credentials.
 - **No offline cache yet**: the client has no local storage and calls the API directly. The local-storage technology for the web client is undecided and belongs to the `sync` implementation.
-- **Spec-only**: `health`, `healthkit-integration`, `nutrition-log`, `nutrition-goals`, `recipes`, `workouts`, `progress`, `ai-assistant`, `sync`, `profile`.
-- **Tests**: the client has unit tests (Vitest) next to each component and service; the backend has no test project.
+- **Spec-only**: `health`, `healthkit-integration`, `nutrition-log`, `nutrition-goals`, `recipes`, `workouts`, `progress`, `ai-assistant`, `sync`, `profile` (except its time zone).
+- **User time zone and local day**: every user has an IANA time zone stored server-side (`Europe/Madrid` by default), readable and writable at `/api/profile/time-zone`. That endpoint is the only part of `profile` that is implemented. The water history groups entries by the user's local day. Verified end to end against the real backend (`openspec/changes/archive/2026-10-11-user-local-day/verification.md`).
+- **Tests**: the client has unit tests (Vitest) next to each component and service; the backend has one xUnit project, `kora-health-api/tests/Application.Tests/`, limited to the local-day calculation, time zone validation and the water history. It needs no database or network.
 
 `README.md` has the full setup walkthrough (Neon connection, CORS, client configuration).
 
@@ -35,6 +36,9 @@ cd kora-health-api/src/Application && dotnet run
 
 # Build the whole solution
 cd kora-health-api && dotnet build KoraHealth.Api.slnx
+
+# Run the backend tests (xUnit; no database needed)
+cd kora-health-api && dotnet test KoraHealth.Api.slnx
 
 # Add a migration
 cd kora-health-api && dotnet ef migrations add <Name> \
@@ -74,15 +78,15 @@ This project uses the [OpenSpec](https://openspec.dev) spec-driven workflow (`sc
 
 - `openspec/specs/<capability>/spec.md` — the 11 approved capabilities (current, authoritative state).
 - `openspec/changes/<slug>/` — changes in flight, each with `proposal.md`, `design.md`, `tasks.md` and a `specs/` delta.
-- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`, `migrate-client-to-angular`.
+- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`, `migrate-client-to-angular`, `user-local-day`.
 - `openspec/specs/initial/ARQUITECTURA.md` and `FUNCIONALIDADES.md` — the original unstructured notes the first change was based on. Their content is now covered by the formal specs; removing this folder was deliberately deferred by the user and is still pending.
 
 When asked to build a feature, start a new OpenSpec change (proposal + tasks + spec deltas) before writing implementation code, following the structure of the archived changes. Validate with `openspec validate` before archiving. The `/opsx:*` commands and `openspec-*` skills in `.claude/` drive this workflow.
 
 ### Active changes
 
-- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for the Angular client.
-- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for the Angular client.
+- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for the Angular client. Depends on `user-local-day` (archived): the user entity and table already exist and every new user must get a time zone.
+- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for the Angular client. Depends on `user-local-day` (archived): the time zone already lives at `/api/profile/time-zone`, and whether its form edits it is still open.
 
 Known issue: there is no `openspec/specs/auth/spec.md`. The interim "fixed development user" `auth` delta exists only inside the archived scaffold change, although `FixedTestUser.cs` and the README refer to it as if it were a main spec.
 
@@ -114,12 +118,13 @@ Angular (TypeScript) --HTTP REST--> ASP.NET Core Web API --> PostgreSQL on Neon 
 
 ### Backend
 
-Four projects under `kora-health-api/src/`. Folder names are short, project files carry the `KoraHealth.Api.` prefix, and C# namespaces omit `Api` (`KoraHealth.Application`, `KoraHealth.Domain`, `KoraHealth.Infrastructure`).
+Four projects under `kora-health-api/src/`, plus one test project under `kora-health-api/tests/`. Folder names are short, project files carry the `KoraHealth.Api.` prefix, and C# namespaces omit `Api` (`KoraHealth.Application`, `KoraHealth.Domain`, `KoraHealth.Infrastructure`).
 
-- **Domain** — no dependencies. `Entities/` (EF-mapped, `*Entity`, derive from `BaseEntity`), `Models/` (domain models used by services, derive from `BaseModel`), `Contracts/` (repository and service interfaces).
+- **Domain** — no dependencies. `Entities/` (EF-mapped, `*Entity`, derive from `BaseEntity`), `Models/` (domain models used by services, derive from `BaseModel`), `Contracts/` (repository and service interfaces), and `LocalDay/`, a cross-cutting folder with the pure local-day code: `UserCalendar` (immutable; built from a time zone and an instant, it gives the user's current day, the local day of any instant and the UTC bounds of a range of local days), `TimeZoneValidator` and `TimeZoneDefaults`.
 - **Infrastructure** — `EntityFramework/` (`KoraHealthDbContext`, migrations, snake_case naming via `EFCore.NamingConventions`) and `Repositories/BBDD/` (EF implementations on top of `BaseCRUDRepository`). `Repositories/ExternalServices/` is the placeholder for outbound integrations such as the AI provider.
 - **Application** — the host project: `Program.cs`, `Controllers/`, `Services/`, `DTOs/`, `Mappers/AutoMapperProfile.cs`, `Authentication/`. Note that service implementations live here, while their interfaces live in Domain.
 - **Common** — empty for now.
+- **tests/Application.Tests** — xUnit, hand-written test doubles in `TestDoubles/` (no mocking library), one folder per feature (`LocalDay/`, `WaterTracking/`).
 
 Request flow: `Controller → I<Feature>Service → I<Feature>Repository → DbContext`. Each feature gets its own subfolder in every layer (`Controllers/WaterTracking/`, `Services/WaterTracking/`, `Entities/WaterTracking/`, …).
 
@@ -128,7 +133,10 @@ Conventions to follow when adding a feature:
 - API request DTOs end in `Rq`, live in `DTOs/<Feature>/Request/`, and derive from `BaseApiRq`, whose `IsValid()` the controller checks before calling the service. Response DTOs end in `Rs` and live in `DTOs/<Feature>/Response/`.
 - Three shapes per concept: `*Rq`/`*Rs` (API) ↔ domain model ↔ `*Entity` (persistence). AutoMapper converts between them; register new maps in `AutoMapperProfile`.
 - Register services in `Application/ServiceCollectionExtensions.cs` and repositories in `Infrastructure/InfrastructureServiceCollectionExtensions.cs`.
-- Routes are kebab-case under `/api/<capability>` (e.g. `/api/water-tracking/goal`).
+- Routes are kebab-case under `/api/<capability>` (e.g. `/api/water-tracking/goal`, `/api/profile/time-zone`).
+- Expected validation failures are not exceptions: the service reports them and the controller answers `400` with a plain-text message (there is no error middleware, so an exception becomes a `500`).
+- Read the current time through the injected `TimeProvider` (registered as `TimeProvider.System`) in new code, so it can be replaced in tests. The older `DateTime.UtcNow` calls in `WaterTrackingRepository` were left as they are.
+- Time zones: any value coming from outside goes through `TimeZoneValidator.TryNormalize` and the identifier it returns is what gets stored, never the `Id` of the `TimeZoneInfo` (.NET hands back the spelling it was first asked with and caches it for the life of the process).
 - Controllers currently take the user from `FixedTestUser.Id`. That constant is temporary and goes away with `add-auth` — don't build new abstractions on top of it.
 - CORS: `Program.cs` defines one named policy whose origins come from `Cors:AllowedOrigins` (no wildcard, methods `GET`/`PUT`/`POST`, header `Content-Type`). `appsettings.Development.json` lists `http://localhost:4200`; outside Development no origin is allowed by default. A new HTTP method or request header used by the client must be added to the policy.
 
@@ -168,5 +176,6 @@ kora-health-client/
 
 - **HealthKit**: exclusive to the client app running on the user's iOS device. The backend must never access HealthKit directly; HealthKit data always enters via client → API → PostgreSQL. The web client must keep working without HealthKit, and no client code may assume a native environment until the Capacitor change exists.
 - **AI**: the backend is the only component that talks to the AI provider. The client sends images/questions/context to the backend, which calls the provider and returns the result.
+- **Local day**: "the day" is the calendar day in the user's time zone, and the server works it out. Get the user's `UserCalendar` from `ILocalDayService` and use it to find today, to group instants by day and to turn a range of days into UTC bounds. Instants are stored in UTC. No module groups by UTC date, adds 24 hours to move between days, or leaves this calculation to the client, which sends no dates or day limits. A user who changes time zone sees their history regrouped; stored instants do not change.
 - **Sync model**: local (cache, offline-capable; storage technology undecided) + remote (PostgreSQL via REST). No multi-device conflict-resolution strategy is planned for now (explicit non-goal).
 - **Business logic lives server-side**: the API is meant to be shared across multiple clients eventually, so don't put business rules in the client: it validates input format and presents data, and calculations belong to the API.

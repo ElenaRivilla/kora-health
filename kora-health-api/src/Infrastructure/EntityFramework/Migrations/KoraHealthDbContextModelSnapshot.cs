@@ -22,7 +22,7 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KoraHealth.Domain.Entities.User.User", b =>
+            modelBuilder.Entity("KoraHealth.Domain.Entities.User.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,6 +30,11 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("TimeZoneId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone_id");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -42,7 +47,7 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("KoraHealth.Domain.Entities.WaterTracking.WaterEntry", b =>
+            modelBuilder.Entity("KoraHealth.Domain.Entities.WaterTracking.WaterEntryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +74,7 @@ namespace KoraHealth.Infrastructure.EntityFramework.Migrations
                     b.ToTable("water_entries", (string)null);
                 });
 
-            modelBuilder.Entity("KoraHealth.Domain.Entities.WaterTracking.WaterGoal", b =>
+            modelBuilder.Entity("KoraHealth.Domain.Entities.WaterTracking.WaterGoalEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

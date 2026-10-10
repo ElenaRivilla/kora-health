@@ -1,5 +1,6 @@
 using AutoMapper;
 using KoraHealth.Domain.Contracts.Repositories.WaterTracking;
+using KoraHealth.Domain.Contracts.Services.LocalDay;
 using KoraHealth.Domain.Contracts.Services.WaterTracking;
 using KoraHealth.Domain.Models.WaterTracking;
 
@@ -8,11 +9,13 @@ namespace KoraHealth.Application.Services.WaterTracking;
 public class WaterTrackingService : IWaterTrackingService
 {
     private readonly IWaterTrackingRepository _waterTrackingRepository;
+    private readonly ILocalDayService _localDayService;
     private readonly IMapper _mapper;
 
-    public WaterTrackingService(IWaterTrackingRepository waterTrackingRepository, IMapper mapper)
+    public WaterTrackingService(IWaterTrackingRepository waterTrackingRepository, ILocalDayService localDayService, IMapper mapper)
     {
         _waterTrackingRepository = waterTrackingRepository;
+        _localDayService = localDayService;
         _mapper = mapper;
     }
 
@@ -46,11 +49,18 @@ public class WaterTrackingService : IWaterTrackingService
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(days, nameof(days));
 
-        var entries = await _waterTrackingRepository.GetEntriesSinceAsync(userId, DateTime.UtcNow.Date.AddDays(-(days - 1)));
+        // Days are the user's local days: the window ends today and each entry counts on the day it was logged for them.
+        var calendar = await _localDayService.GetCalendarAsync(userId);
+        var firstDay = calendar.Today.AddDays(-(days - 1));
+        var (sinceUtc, _) = calendar.GetUtcRange(firstDay, calendar.Today);
+
+        var entries = await _waterTrackingRepository.GetEntriesSinceAsync(userId, sinceUtc);
         var goal = await _waterTrackingRepository.GetGoalAsync(userId);
 
         return entries
-            .GroupBy(e => DateOnly.FromDateTime(e.DateCreated))
+            .GroupBy(e => calendar.GetLocalDay(e.DateCreated))
+            // Safeguard: the result stays within the window even if the lower bound was too wide.
+            .Where(g => g.Key >= firstDay)
             .Select(g => new WaterHistoryDay
             {
                 Date = g.Key,

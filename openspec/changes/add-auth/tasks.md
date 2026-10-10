@@ -1,5 +1,7 @@
 ## 1. Backend - Modelo y almacenamiento
 
+> Nota para 1.1 y 1.2 (tras `user-local-day`): `UserEntity` (`src/Domain/Entities/User/UserEntity.cs`) y la tabla `users` ya existen, con `Username` y `TimeZoneId`. Estas dos tareas deben ampliar la entidad y la tabla existentes con los campos de autenticación, no crearlas. Quien se registre recibe la zona por defecto (`TimeZoneDefaults.DefaultTimeZoneId`) y cualquier zona que venga de fuera pasa por `TimeZoneValidator.TryNormalize`; si el registro debe pedirla o proponerla es una pregunta abierta del design.
+
 - [ ] 1.1 Definir la entidad de usuario (email, hash de contraseña, fecha de creación) en `Entities/`
 - [ ] 1.2 Crear la migración de Entity Framework Core para la tabla de usuarios en PostgreSQL
 - [ ] 1.3 Integrar un algoritmo de hash de contraseña con salt (bcrypt/Argon2) en la capa de `Services/`

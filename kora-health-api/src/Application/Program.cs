@@ -1,6 +1,7 @@
 using KoraHealth.Application;
 using KoraHealth.Application.Authentication;
 using KoraHealth.Domain.Entities.User;
+using KoraHealth.Domain.LocalDay;
 using KoraHealth.Infrastructure;
 using KoraHealth.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,12 @@ using (var scope = app.Services.CreateScope())
     // Seed the database with a fixed test user if it doesn't exist
     if (!await db.Users.AnyAsync(u => u.Id == FixedTestUser.Id))
     {
-        db.Users.Add(new UserEntity { Id = FixedTestUser.Id, Username = FixedTestUser.Username });
+        db.Users.Add(new UserEntity
+        {
+            Id = FixedTestUser.Id,
+            Username = FixedTestUser.Username,
+            TimeZoneId = TimeZoneDefaults.DefaultTimeZoneId
+        });
         await db.SaveChangesAsync();
     }
 }
