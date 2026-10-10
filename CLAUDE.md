@@ -11,7 +11,7 @@ Kora Health is in an **early implementation phase**. Both apps are scaffolded an
 - **No real authentication yet**: the backend attributes every request to a single seeded user (`FixedTestUser`, id `1`, username `dev-test-user`). The client sends no credentials.
 - **No offline cache yet**: the client has no local storage and calls the API directly. The local-storage technology for the web client is undecided and belongs to the `sync` implementation.
 - **Spec-only**: `health`, `healthkit-integration`, `nutrition-log`, `nutrition-goals`, `recipes`, `workouts`, `progress`, `ai-assistant`, `sync`, `profile` (except its time zone).
-- **User time zone and local day**: every user has an IANA time zone stored server-side (`Europe/Madrid` by default), readable and writable at `/api/profile/time-zone`. That endpoint is the only part of `profile` that is implemented. The water history groups entries by the user's local day.
+- **User time zone and local day**: every user has an IANA time zone stored server-side (`Europe/Madrid` by default), readable and writable at `/api/profile/time-zone`. That endpoint is the only part of `profile` that is implemented. The water history groups entries by the user's local day. Verified end to end against the real backend (`openspec/changes/archive/2026-10-11-user-local-day/verification.md`).
 - **Tests**: the client has unit tests (Vitest) next to each component and service; the backend has one xUnit project, `kora-health-api/tests/Application.Tests/`, limited to the local-day calculation, time zone validation and the water history. It needs no database or network.
 
 `README.md` has the full setup walkthrough (Neon connection, CORS, client configuration).
@@ -78,16 +78,15 @@ This project uses the [OpenSpec](https://openspec.dev) spec-driven workflow (`sc
 
 - `openspec/specs/<capability>/spec.md` — the 11 approved capabilities (current, authoritative state).
 - `openspec/changes/<slug>/` — changes in flight, each with `proposal.md`, `design.md`, `tasks.md` and a `specs/` delta.
-- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`, `migrate-client-to-angular`.
+- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`, `migrate-client-to-angular`, `user-local-day`.
 - `openspec/specs/initial/ARQUITECTURA.md` and `FUNCIONALIDADES.md` — the original unstructured notes the first change was based on. Their content is now covered by the formal specs; removing this folder was deliberately deferred by the user and is still pending.
 
 When asked to build a feature, start a new OpenSpec change (proposal + tasks + spec deltas) before writing implementation code, following the structure of the archived changes. Validate with `openspec validate` before archiving. The `/opsx:*` commands and `openspec-*` skills in `.claude/` drive this workflow.
 
 ### Active changes
 
-- `user-local-day` — stores a time zone per user and makes "the day" the user's local day, computed server-side; applied to the water history. Implemented and verified (`openspec/changes/user-local-day/verification.md`); only closing and archiving remain (section 5 of its `tasks.md`).
-- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for the Angular client.
-- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for the Angular client.
+- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for the Angular client. Depends on `user-local-day` (archived): the user entity and table already exist and every new user must get a time zone.
+- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for the Angular client. Depends on `user-local-day` (archived): the time zone already lives at `/api/profile/time-zone`, and whether its form edits it is still open.
 
 Known issue: there is no `openspec/specs/auth/spec.md`. The interim "fixed development user" `auth` delta exists only inside the archived scaffold change, although `FixedTestUser.cs` and the README refer to it as if it were a main spec.
 
