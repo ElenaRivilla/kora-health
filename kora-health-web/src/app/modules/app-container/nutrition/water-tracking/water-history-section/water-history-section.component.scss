@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.water-history__status--error {
+  color: var(--color-error);
+}
+
+.water-history__list {
+  padding: 0;
+  list-style: none;
+}
+
+.water-history__day {
+  display: flex;
+  flex-direction: column;
+  padding-block: 0.5rem;
+}
+
+.water-history__total {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+}

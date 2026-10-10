@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { of } from 'rxjs';
 import { routes } from './app.routes';
+import { WaterTrackingService } from './services/water-tracking.service';
 
 describe('app routes', () => {
   let harness: RouterTestingHarness;
@@ -9,7 +11,14 @@ describe('app routes', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [provideRouter(routes)],
+      providers: [
+        provideRouter(routes),
+        // The Nutrición page loads its data on creation; these tests only cover navigation.
+        {
+          provide: WaterTrackingService,
+          useValue: { getGoal: () => of(null), getHistory: () => of([]) },
+        },
+      ],
     });
     harness = await RouterTestingHarness.create();
     router = TestBed.inject(Router);

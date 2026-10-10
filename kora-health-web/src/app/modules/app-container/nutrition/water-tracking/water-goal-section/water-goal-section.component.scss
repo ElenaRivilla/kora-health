@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.water-goal__current {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.water-goal__status--error {
+  color: var(--color-error);
+}
+
+.water-goal__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-block-start: 1rem;
+}
+
+.water-goal__label {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+.water-goal__input {
+  width: 100%;
+  max-width: 20rem;
+  margin-block-end: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 0.0625rem solid var(--color-outline);
+  border-radius: 0.25rem;
+  background-color: var(--color-surface);
+  color: inherit;
+  font: inherit;
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--color-primary);
+    outline-offset: 0;
+  }
+}

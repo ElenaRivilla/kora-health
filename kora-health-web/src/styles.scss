@@ -10,6 +10,7 @@
   --color-on-surface: #1d1b20;
   --color-on-surface-variant: #49454e;
   --color-outline: #7a757f;
+  --color-outline-variant: #cac4d0;
   --color-error: #ba1a1a;
 
   --font-family-base:
@@ -44,6 +45,28 @@ p,
 ul,
 ol {
   margin: 0;
+}
+
+// Shared button look, used by the action buttons across sections.
+.button {
+  padding: 0.625rem 1.5rem;
+  border: 0;
+  border-radius: 62.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--color-primary);
+    outline-offset: 0.125rem;
+  }
 }
 
 // Shown by main.ts when the application cannot start (e.g. the runtime config is missing).
