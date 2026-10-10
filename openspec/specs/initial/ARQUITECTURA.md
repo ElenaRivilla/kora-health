@@ -2,10 +2,10 @@
 
 ## Tecnologías
 
-### Cliente móvil
+### Cliente
 
-- Flutter
-- Dart
+- Angular (TypeScript)
+- Aplicación web pensada para móvil; se empaquetará para iOS con Capacitor cuando se integre HealthKit
 
 ### Backend
 
@@ -21,22 +21,22 @@
 
 ### Cliente HTTP
 
-- Dio
+- `HttpClient` de Angular, a través de un servicio base propio
 
 ### Base de datos local
 
-- Drift (SQLite)
+- Pendiente de decidir para el cliente web (se define junto con la sincronización)
 
 ### Gestión de estado
 
-- Riverpod
+- Signals de Angular, sin librería externa
 
 ---
 
 # Arquitectura general
 
 ```
-                Flutter
+                Angular
                     │
                     │ HTTP REST
                     ▼
@@ -51,25 +51,24 @@
 # Arquitectura del cliente
 
 ```
-Presentation
+Pantallas (modules/app-container)
 │
-├── Pages
-├── Widgets
-└── Providers (Riverpod)
+├── Páginas por funcionalidad
+├── Componentes
+└── Servicios de estado (signals)
         │
         ▼
-Application
+Servicios (services)
 │
-├── Services
-└── Use Cases
+├── Servicio base HTTP
+└── Un servicio de datos por funcionalidad
         │
         ▼
-Data
+Compartido (shared)
 │
-├── API Client (Dio)
-├── HealthKit
-├── Drift
-└── Repositories
+├── Configuración en runtime
+├── DTOs
+└── Helpers
 ```
 
 ---
@@ -101,15 +100,15 @@ PostgreSQL
 # Flujo de una petición
 
 ```
-Flutter
+Componente
 
 ↓
 
-Service
+Servicio de estado
 
 ↓
 
-Dio
+Servicio de datos
 
 ↓
 
@@ -140,14 +139,14 @@ PostgreSQL
 
 # Integración con HealthKit
 
-HealthKit será accesible únicamente desde la aplicación Flutter.
+HealthKit será accesible únicamente desde la aplicación cliente que se ejecuta en el dispositivo iOS del usuario.
 
 ```
 HealthKit
 
 ↓
 
-Flutter
+Cliente
 
 ↓
 
@@ -168,7 +167,7 @@ La aplicación almacenará datos tanto de forma local como remota.
 
 ## Local
 
-- Drift
+- Almacenamiento local del cliente (tecnología pendiente de decidir)
 - Caché
 - Trabajo offline
 
@@ -179,33 +178,41 @@ La aplicación almacenará datos tanto de forma local como remota.
 
 ---
 
-# Organización del proyecto Flutter
+# Organización del proyecto Angular
 
 ```
-lib/
+src/app/
 
-core/
-shared/
+app.config.ts
+app.routes.ts
 
-features/
+modules/app-container/
+
+    home/
 
     health/
 
     nutrition/
 
-    workout/
+    workouts/
 
     progress/
 
     profile/
 
+    shared/
+
 services/
 
-repositories/
+    pipes/
 
-models/
+shared/
 
-providers/
+    config/
+
+    entities/DTOS/
+
+    helpers/
 ```
 
 Cada módulo será independiente.
@@ -251,7 +258,7 @@ Cada módulo tendrá su propio conjunto de:
 - Servicios
 - Repositorios
 - Pantallas
-- Providers
+- Servicios de estado
 
 ---
 
@@ -259,7 +266,7 @@ Cada módulo tendrá su propio conjunto de:
 
 La IA será consumida desde el backend.
 
-La aplicación Flutter enviará:
+La aplicación cliente enviará:
 
 - imágenes
 - preguntas
@@ -274,11 +281,11 @@ El backend procesará la solicitud utilizando el proveedor de IA correspondiente
 La API será compartida por distintos clientes.
 
 ```
-Flutter (iOS)
+Aplicación Web (Angular)
         │
-Flutter (Android)
+App iOS (Angular + Capacitor)
         │
-Aplicación Web
+Otros clientes
         │
 ───────────────
 ASP.NET Core API

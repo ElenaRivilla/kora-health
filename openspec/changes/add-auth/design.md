@@ -1,6 +1,6 @@
 ## Context
 
-Kora Health no tiene hoy ninguna capability que defina cómo se crea o autentica un usuario. La arquitectura planeada es Flutter (Dart) → ASP.NET Core Web API → PostgreSQL (`openspec/specs/initial/ARQUITECTURA.md`), sin backend intermedio adicional, así que `auth` vive en el backend y expone endpoints REST consumidos por Flutter. `profile`, `sync` y el resto de capabilities asumen una identidad de usuario ya existente contra la que persistir datos.
+Kora Health no tiene hoy ninguna capability que defina cómo se crea o autentica un usuario. La arquitectura es Angular → ASP.NET Core Web API → PostgreSQL (`openspec/specs/initial/ARQUITECTURA.md`), sin backend intermedio adicional, así que `auth` vive en el backend y expone endpoints REST consumidos por el cliente Angular. `profile`, `sync` y el resto de capabilities asumen una identidad de usuario ya existente contra la que persistir datos.
 
 ## Goals / Non-Goals
 
@@ -20,7 +20,7 @@ Kora Health no tiene hoy ninguna capability que defina cómo se crea o autentica
 ## Decisions
 
 - **Formulario email + contraseña como único método**: es el mecanismo más simple que desbloquea el resto de capabilities (todas dependen de tener un usuario identificado), y coincide con lo pedido. Login social queda fuera para no ampliar el alcance.
-- **Sesión basada en token (JWT) emitido por el backend tras un login o registro exitoso**: Flutter almacena el token y lo envía en la cabecera `Authorization` en las siguientes peticiones REST. Alternativa descartada: sesiones con estado (cookies + almacenamiento de sesión en servidor), que añaden complejidad de infraestructura innecesaria para un API REST sin servidor de sesión compartido.
+- **Sesión basada en token (JWT) emitido por el backend tras un login o registro exitoso**: el cliente Angular conserva el token y lo envía en la cabecera `Authorization` en las siguientes peticiones REST, mediante un interceptor HTTP. Alternativa descartada: sesiones con estado (cookies + almacenamiento de sesión en servidor), que añaden complejidad de infraestructura innecesaria para un API REST sin servidor de sesión compartido.
 - **Contraseñas almacenadas con hash + salt (algoritmo tipo bcrypt/Argon2)**: nunca se persiste la contraseña en texto plano. Es un requisito de seguridad mínimo, no una preferencia.
 - **`auth` como capability fundacional**: junto a `profile` y `sync`, es una dependencia implícita del resto del sistema (cualquier dato por usuario necesita una identidad de `auth`). No se modela como dependencia explícita en cada spec porque sería redundante — se documenta aquí como decisión transversal.
 
@@ -39,3 +39,5 @@ No aplica: no existe implementación previa de autenticación en el proyecto (sp
 - ¿Duración de expiración del JWT y estrategia de renovación (refresh token) o simplemente re-login al expirar?
 - ¿Cuándo se abordará la recuperación de contraseña y la verificación de email — change inmediato siguiente o más adelante?
 - ¿`profile`, al consumir `auth`, necesita algún dato adicional del registro (username) más allá del email, o el username se gestiona por separado en `profile`?
+- ¿Dónde conserva el token el cliente Angular en el navegador (memoria, `sessionStorage`, `localStorage`, cookie)? Cada opción tiene implicaciones distintas de seguridad (exposición a XSS) y de persistencia de la sesión al recargar. Sin decidir.
+- ¿Se valora Firebase como proveedor de autenticación en lugar del JWT propio del backend? La autora lo dejó como posibilidad al migrar el cliente a Angular (`migrate-client-to-angular`, decisión 12 de su design). Cambiaría la decisión de sesión de este documento. Sin decidir.

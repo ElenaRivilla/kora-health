@@ -6,20 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kora Health is in an **early implementation phase**. Both apps are scaffolded and one pilot module is implemented end to end; everything else exists only as specs.
 
-- **Implemented**: `water-tracking` (backend endpoints + Flutter screens), verified manually against the real backend.
+- **Implemented**: `water-tracking` (backend endpoints + Angular screens), verified end to end against the real backend (`openspec/changes/migrate-client-to-angular/verification.md`). The spec's "estadísticas resumidas" are not implemented anywhere yet: the API only returns daily totals.
+- **Client is Angular**: the original Flutter client was removed; `kora-health-client/` now holds the Angular app. It is a web app designed mobile-first. Reading HealthKit will require packaging it for iOS with Capacitor, which is planned for a later change and not started.
 - **No real authentication yet**: the backend attributes every request to a single seeded user (`FixedTestUser`, id `1`, username `dev-test-user`). The client sends no credentials.
-- **No offline cache yet**: the Drift database is configured with zero tables and runs in memory; the client calls the API directly. Local tables arrive with the `sync` implementation.
+- **No offline cache yet**: the client has no local storage and calls the API directly. The local-storage technology for the web client is undecided and belongs to the `sync` implementation.
 - **Spec-only**: `health`, `healthkit-integration`, `nutrition-log`, `nutrition-goals`, `recipes`, `workouts`, `progress`, `ai-assistant`, `sync`, `profile`.
-- **No automated tests**: the client has only the default `test/widget_test.dart`; the backend has no test project.
+- **Tests**: the client has unit tests (Vitest) next to each component and service; the backend has no test project.
 
-`README.md` has the full setup walkthrough (Neon connection, per-device Flutter run commands). It still names the `.csproj` files without the `Api.` infix and describes a Windows Flutter install — trust the paths in this file over the README where they differ.
+`README.md` has the full setup walkthrough (Neon connection, CORS, client configuration).
 
 ## Repository layout
 
 ```
 openspec/              # Specs (source of truth) and changes
 kora-health-api/       # ASP.NET Core backend (net10.0), solution: KoraHealth.Api.slnx
-kora-health-client/    # Flutter client
+kora-health-client/    # Angular client (the app is named `kora-health-web` in angular.json and package.json)
 ```
 
 ## Commands
@@ -46,16 +47,19 @@ On startup `Program.cs` applies pending migrations automatically and seeds the f
 
 ### Client (`kora-health-client`)
 
+Angular CLI is not installed globally; use the npm scripts or `npx ng ...` inside the folder. Angular 22 needs Node `^22.22.3`, `^24.15.0` or `>=26`.
+
 ```bash
 cd kora-health-client
-flutter pub get
-flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:5001
-flutter analyze
-flutter test
-dart run build_runner build --delete-conflicting-outputs   # regenerate Drift code (*.g.dart)
+npm install
+npm start                    # dev server on http://localhost:4200
+npm run build                # output in dist/kora-health-web
+npm test -- --watch=false    # unit tests (Vitest), single run; plain `npm test` watches
+npx ng lint                  # angular-eslint
+npx ng generate component <path>   # generators emit *.component.ts / *.service.ts with suffixed class names
 ```
 
-`API_BASE_URL` is a compile-time define read in `lib/core/env.dart` (default `http://localhost:5001`). The Android emulator needs `http://10.0.2.2:5001` instead of `localhost`.
+The API base URL is runtime configuration, not a build flag: `public/assets/config.json` (`{ "apiBaseUrl": "http://localhost:5001" }`) is loaded by `AppConfigService` before the app renders, and startup fails visibly if it is missing. The origin serving the client must be listed in the API's CORS configuration (see Backend).
 
 ### OpenSpec
 
@@ -75,16 +79,13 @@ This project uses the [OpenSpec](https://openspec.dev) spec-driven workflow (`sc
 
 When asked to build a feature, start a new OpenSpec change (proposal + tasks + spec deltas) before writing implementation code, following the structure of the archived changes. Validate with `openspec validate` before archiving. The `/opsx:*` commands and `openspec-*` skills in `.claude/` drive this workflow.
 
-### Active changes (proposed, not started)
+### Active changes
 
-- `add-auth` (0/16 tasks) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user.
-- `update-profile` (0/12 tasks) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile.
+- `migrate-client-to-angular` — replaces the Flutter client with the Angular one. Implemented and verified; only closing and archiving remain (section 6 of its `tasks.md`).
+- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for Angular and depend on `migrate-client-to-angular`.
+- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for Angular and depend on `migrate-client-to-angular`.
 
-Known issues to fix before applying or archiving them:
-
-- `update-profile`'s delta modifies `### Requirement: Personal Data Management`, but the main spec's header is now `Gestión de Datos Personales`, so archiving would be refused. The delta header must match the Spanish name.
-- Both deltas use English `#### Scenario:` / `WHEN` / `THEN` instead of the Spanish convention below.
-- There is no `openspec/specs/auth/spec.md`. The interim "fixed development user" `auth` delta exists only inside the archived scaffold change, although `FixedTestUser.cs` and the README refer to it as if it were a main spec.
+Known issue: there is no `openspec/specs/auth/spec.md`. The interim "fixed development user" `auth` delta exists only inside the archived scaffold change, although `FixedTestUser.cs` and the README refer to it as if it were a main spec.
 
 ### Spec language: Spanish, with English structural keywords
 
@@ -99,17 +100,17 @@ Everything else is free-form and unvalidated: `#### Escenario: <name>` (any leve
 ### The 11 capabilities and their dependencies
 
 - `sync` and `profile` are foundational — most other capabilities depend on them (local/remote storage strategy, user config). `auth` will join them once `add-auth` lands.
-- `health` depends on `healthkit-integration` (HealthKit is reachable only from the Flutter client; the backend never talks to HealthKit directly — data flows HealthKit → Flutter → API → PostgreSQL).
+- `health` depends on `healthkit-integration` (HealthKit is reachable only from the client app running on the user's iOS device; the backend never talks to HealthKit directly — data flows HealthKit → client → API → PostgreSQL).
 - `nutrition-log` and `nutrition-goals` are split: `nutrition-log` is the food/meal diary and photo/AI recognition; `nutrition-goals` is the calorie/macro targets and the daily nutrition score. `profile` also holds calorie/macro configuration — don't duplicate that config in `nutrition-goals`.
 - `water-tracking` and `recipes` are intentionally separate specs, not folded into `nutrition-log`.
 - `workouts` is the training log (routines, exercises, sets/reps/weight, PRs) — modeled after Hevy.
 - `progress` aggregates `health`, `nutrition-log`, `nutrition-goals`, and `workouts` data (trends, comparisons, AI-generated summaries) — it should not redefine their underlying data.
-- `ai-assistant` is the cross-cutting AI capability (food image recognition, quantity estimation, score explanations, recommendations, summaries, Q&A over user data). The AI provider is consumed **from the backend**, not directly from Flutter. Planned provider: Gemini 2.5 Flash (implementation-level detail still pending its own change).
+- `ai-assistant` is the cross-cutting AI capability (food image recognition, quantity estimation, score explanations, recommendations, summaries, Q&A over user data). The AI provider is consumed **from the backend**, not directly from the client. Planned provider: Gemini 2.5 Flash (implementation-level detail still pending its own change).
 
 ## Architecture
 
 ```
-Flutter (Dart) --HTTP REST--> ASP.NET Core Web API --> PostgreSQL on Neon (Entity Framework Core + Npgsql)
+Angular (TypeScript) --HTTP REST--> ASP.NET Core Web API --> PostgreSQL on Neon (Entity Framework Core + Npgsql)
 ```
 
 ### Backend
@@ -130,27 +131,43 @@ Conventions to follow when adding a feature:
 - Register services in `Application/ServiceCollectionExtensions.cs` and repositories in `Infrastructure/InfrastructureServiceCollectionExtensions.cs`.
 - Routes are kebab-case under `/api/<capability>` (e.g. `/api/water-tracking/goal`).
 - Controllers currently take the user from `FixedTestUser.Id`. That constant is temporary and goes away with `add-auth` — don't build new abstractions on top of it.
+- CORS: `Program.cs` defines one named policy whose origins come from `Cors:AllowedOrigins` (no wildcard, methods `GET`/`PUT`/`POST`, header `Content-Type`). `appsettings.Development.json` lists `http://localhost:4200`; outside Development no origin is allowed by default. A new HTTP method or request header used by the client must be added to the policy.
 
-### Flutter client
+### Angular client
 
-Feature-based, with three layers inside each feature under `lib/features/<feature>/`:
+Angular 22, standalone components (no `NgModule`; `modules/` is only a grouping name), zoneless (no `zone.js`), state with signals, plain SCSS. No state, UI-component or translation library, no SSR. Screens are organised by feature under `modules/app-container/`; data access and cross-cutting code live apart:
 
 ```
-presentation/   Pages and widgets
-application/    Riverpod providers / controllers
-data/           API models and repository (Dio calls)
+kora-health-client/
+  public/assets/config.json     Runtime configuration (API base URL); public/ is the only static folder
+  src/
+    main.ts                     Bootstrap; renders a visible error if startup fails
+    styles.scss                 Global styles and colour variables
+    app/
+      app.config.ts             Global providers: router, HttpClient, config.json initializer
+      app.routes.ts             Routes
+      modules/app-container/    Screens by feature
+        home/                   App shell: header, five-destination navigation, router outlet
+        health/ nutrition/ workouts/ progress/ profile/   One page component per section
+        nutrition/water-tracking/   Goal, quick-log and history components + their signals state service
+        shared/components/      Components shared between sections (section-card)
+      services/                 Data access: base-http.service.ts, water-tracking.service.ts
+        pipes/                  Presentation pipes; empty until a feature needs one
+      shared/                   Cross-cutting: config/, entities/DTOS/, helpers/
 ```
 
-- `lib/core/` — cross-cutting infrastructure: `ApiClient` (Dio), `Env`, the Drift `AppDatabase`.
-- `lib/providers/` — global Riverpod providers (`apiClientProvider`, `appDatabaseProvider`).
-- `lib/shared/`, `lib/services/`, `lib/repositories/`, `lib/models/` — empty placeholders for code not tied to a single feature.
-- `lib/main.dart` — `ProviderScope` plus a five-tab `NavigationBar` (Salud, Nutrición, Entrenamiento, Progreso, Perfil). Only Nutrición has content today: it hosts the water-tracking sections. The other tabs are empty placeholders.
-
-Feature modules are meant to stay independent of each other.
+- **Routes**: `/` redirects to `/salud`; `/salud`, `/nutricion`, `/entrenamiento`, `/progreso` and `/perfil` are lazy children of `HomeComponent`, and unknown URLs fall back to `/`. Each route declares its `title`, which the header shows. Only Nutrición has content (water-tracking); the other pages are empty.
+- **Layout**: mobile-first. The navigation bar sits at the bottom on narrow screens and moves into the header from 768px up.
+- **Data access**: a service per capability in `services/` extends `BaseHttpService`, which prefixes `apiBaseUrl` and applies a 10s timeout. Components do not call `HttpClient` directly.
+- **State**: a signals-based state service per feature, provided by the page that owns it (`WaterTrackingStateService` in `NutritionPageComponent`), not in root.
+- **DTOs**: TypeScript `interface`s in `shared/entities/DTOS/<capability>/`, one per file, named like the backend class (`WaterGoalRs`, `SetWaterGoalRq`). Dates stay as ISO `string`s.
+- **Naming**: identifiers, files and folders in English; visible text and URL segments in Spanish. Kebab-case files with a type suffix (`*.component.ts`, `*.service.ts`), `app-` selector prefix, one component per folder with its `.ts`, `.html`, `.scss` and `.spec.ts`. Templates use `@if`/`@for`; injection uses `inject()`.
+- **Independence**: a section folder under `modules/app-container/` does not import from another section; shared pieces move up to `modules/app-container/shared/`.
+- **Not present on purpose**: no auth guard or session services (they arrive with `add-auth`), no Firebase, no pipes, no translations (Spanish text lives in the templates; the preferred future direction is plain JSON i18n files).
 
 ### Rules that hold across the codebase
 
-- **HealthKit**: exclusive to the Flutter app. The backend must never access HealthKit directly; HealthKit data always enters via Flutter → API → PostgreSQL.
-- **AI**: the backend is the only component that talks to the AI provider. Flutter sends images/questions/context to the backend, which calls the provider and returns the result.
-- **Sync model**: local (Drift, cache, offline-capable) + remote (PostgreSQL via REST). No multi-device conflict-resolution strategy is planned for now (explicit non-goal).
-- **Business logic lives server-side**: the API is meant to be shared across multiple clients eventually (Flutter iOS/Android, web), so don't put business rules in the Flutter client.
+- **HealthKit**: exclusive to the client app running on the user's iOS device. The backend must never access HealthKit directly; HealthKit data always enters via client → API → PostgreSQL. The web client must keep working without HealthKit, and no client code may assume a native environment until the Capacitor change exists.
+- **AI**: the backend is the only component that talks to the AI provider. The client sends images/questions/context to the backend, which calls the provider and returns the result.
+- **Sync model**: local (cache, offline-capable; storage technology undecided) + remote (PostgreSQL via REST). No multi-device conflict-resolution strategy is planned for now (explicit non-goal).
+- **Business logic lives server-side**: the API is meant to be shared across multiple clients eventually, so don't put business rules in the client: it validates input format and presents data, and calculations belong to the API.

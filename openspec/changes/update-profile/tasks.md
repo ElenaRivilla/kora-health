@@ -10,9 +10,11 @@
 - [ ] 2.2 Añadir el endpoint/mecanismo interno mediante el cual `health` actualiza el peso vigente de `profile` al recibir una nueva medición de HealthKit
 - [ ] 2.3 Aplicar la regla "la medición más reciente por fecha gana" al actualizar el peso, sea cual sea su origen (manual o HealthKit)
 
-## 3. Flutter - Edición de perfil
+## 3. Cliente Angular - Edición de perfil
 
-- [ ] 3.1 Actualizar el formulario de perfil para incluir username, edad, sexo, peso y altura
+Requiere que `migrate-client-to-angular` esté aplicado. Las rutas `src/...` son relativas a `kora-health-client/`.
+
+- [ ] 3.1 Crear el formulario de perfil en `src/app/modules/app-container/profile/` (hoy una página vacía) con username, edad, sexo, peso y altura, su servicio de datos en `src/app/services/` y sus DTOs en `src/app/shared/entities/DTOS/`
 - [ ] 3.2 Bloquear el guardado de cambios de perfil cuando no haya conexión de red, mostrando el motivo al usuario
 - [ ] 3.3 Reflejar en la UI el peso vigente cuando se actualice automáticamente desde una medición de HealthKit
 

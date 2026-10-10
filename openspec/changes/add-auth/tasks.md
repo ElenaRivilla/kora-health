@@ -12,13 +12,17 @@
 - [ ] 2.4 Añadir middleware de autenticación que valide el JWT en las peticiones a endpoints protegidos y exponga el usuario autenticado al resto de `Controllers/`
 - [ ] 2.5 Añadir DTOs de request/response para registro y login en `DTOs/`
 
-## 3. Flutter - Formularios y sesión
+## 3. Cliente Angular - Formularios y sesión
 
-- [ ] 3.1 Crear la pantalla/formulario de registro (email, contraseña) en el módulo de `profile` o un módulo `auth` dedicado
-- [ ] 3.2 Crear la pantalla/formulario de login (email, contraseña)
-- [ ] 3.3 Implementar las llamadas a `POST /auth/register` y `POST /auth/login` desde el cliente Dio
-- [ ] 3.4 Almacenar el JWT recibido de forma segura en el dispositivo y adjuntarlo como cabecera `Authorization` en las siguientes peticiones REST
-- [ ] 3.5 Manejar los errores de registro (email duplicado) y login (credenciales incorrectas) mostrando feedback al usuario
+Requiere que `migrate-client-to-angular` esté aplicado. Las rutas `src/...` son relativas a `kora-health-client/`.
+
+- [ ] 3.1 Crear la pantalla/formulario de registro (email, contraseña) como componente standalone bajo `src/app/modules/app-container/`, en la sección de `profile` o en una sección `auth` dedicada, con su ruta en `src/app/app.routes.ts`
+- [ ] 3.2 Crear la pantalla/formulario de login (email, contraseña), con su ruta
+- [ ] 3.3 Crear el servicio de autenticación (extiende `BaseHttpService`) con las llamadas a `POST /auth/register` y `POST /auth/login`, y sus DTOs en `src/app/shared/entities/DTOS/`. La ubicación de este servicio y del de sesión la decide este change
+- [ ] 3.4 Crear el servicio de sesión que conserva el JWT recibido y un interceptor HTTP, registrado en `src/app/app.config.ts`, que lo adjunta como cabecera `Authorization` en las siguientes peticiones REST. Dónde se guarda el token en el navegador depende de la pregunta abierta del design; no implementar hasta resolverla
+- [ ] 3.5 Crear un `authGuard` y aplicarlo a la ruta raíz de `src/app/app.routes.ts`, de modo que las secciones exijan sesión y las pantallas de registro y login queden fuera. Su ubicación la decide este change
+- [ ] 3.6 Manejar los errores de registro (email duplicado) y login (credenciales incorrectas) mostrando feedback al usuario
+- [ ] 3.7 Añadir la cabecera `Authorization` a las cabeceras permitidas por la política de CORS de la API (`Program.cs`), que hoy solo admite `Content-Type`
 
 ## 4. Validación
 

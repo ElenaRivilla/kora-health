@@ -22,3 +22,4 @@ Kora Health no dispone de ninguna capability que defina cómo un usuario obtiene
 - Nuevo dominio de identidad de usuario (cuenta, credenciales, sesión) del que pasan a depender `profile` y, transitivamente, cualquier capability que persista datos por usuario.
 - Requiere almacenamiento seguro de credenciales (hash de contraseña) en el backend.
 - Los endpoints de la API que hoy asumen un usuario ya identificado pasarán a depender de la sesión/token emitidos por `auth`.
+- **Dependencia**: este change depende de `migrate-client-to-angular`. Su parte de cliente (formularios, sesión, guard e interceptor) se implementa sobre el cliente Angular de `kora-health-client/`.

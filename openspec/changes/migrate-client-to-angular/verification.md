@@ -82,7 +82,7 @@ Otras diferencias, menores:
 
 | Diferencia | Flutter | Angular |
 |---|---|---|
-| Posición de la navegación | Barra inferior (`NavigationBar`) | Barra en la cabecera, a la derecha del título |
+| Posición de la navegación | Barra inferior (`NavigationBar`) | Barra inferior en pantallas estrechas (por debajo de 768 px), igual que en Flutter; solo en pantallas anchas sube a la cabecera, a la derecha del título. La verificación se hizo en una ventana ancha; la posición inferior se comprobó después en un viewport de 375×812 |
 | Indicador de carga | Indicador circular, sin texto | Texto «Cargando…» |
 | Error al guardar el objetivo o registrar una entrada | No se muestra al usuario | Se muestra «Error: …» en la sección afectada |
 | Fallo al cargar la configuración | No aplica (URL fijada al compilar) | Mensaje visible «No se ha podido iniciar Kora Health…» |

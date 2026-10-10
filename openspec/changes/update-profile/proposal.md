@@ -22,4 +22,5 @@ El requirement actual de "Personal Data Management" en `profile` no especifica q
 
 - Modelo de datos de `profile` en el backend (Entities/DTOs) pasa a tener campos explícitos.
 - Flujo nuevo entre `health` y `profile`: cuando `health` recibe una medición de peso desde HealthKit, debe propagar el nuevo valor al perfil del usuario.
-- El cliente Flutter no debe permitir editar `profile` sin conexión (a diferencia de otras pantallas que sí cachean cambios offline vía Drift).
+- El cliente no debe permitir editar `profile` sin conexión (a diferencia de otras pantallas, que sí guardarán cambios en local y los sincronizarán vía `sync`).
+- **Dependencia**: este change depende de `migrate-client-to-angular`. Su parte de cliente (formulario de perfil) se implementa sobre el cliente Angular de `kora-health-client/`.

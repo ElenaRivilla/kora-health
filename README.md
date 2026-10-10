@@ -5,7 +5,7 @@ Kora Health es una app personal de seguimiento de salud, nutrición y entrenamie
 El proyecto sigue un flujo **spec-driven** con [OpenSpec](https://openspec.dev) — las especificaciones funcionales viven en `openspec/specs/` (en español) y son la fuente de verdad de qué se debe construir. Ver `CLAUDE.md` para más detalle sobre esa convención.
 
 **Stack:**
-- **Cliente**: Flutter (Dart), Riverpod (estado), Dio (HTTP), Drift/SQLite (caché local, todavía sin tablas de módulo).
+- **Cliente**: Angular 22 (TypeScript), componentes standalone sin `zone.js`, estado con signals, SCSS. Aplicación web pensada para móvil; todavía sin caché local ni modo offline.
 - **Backend**: ASP.NET Core Web API (.NET), Entity Framework Core + Npgsql, arquitectura en 4 proyectos (Domain / Application / Infrastructure / Common).
 - **Base de datos**: PostgreSQL gestionado en [Neon](https://neon.tech).
 
@@ -22,20 +22,22 @@ kora-health/
 │       ├── Application/       # Proyecto host (Program.cs, Controllers, Services, DTOs de API, AutoMapper)
 │       ├── Infrastructure/    # DbContext, repositorios EF Core
 │       └── Common/            # Vacío por ahora
-└── kora-health-client/    # Cliente Flutter
-    └── lib/
-        ├── core/               # Infraestructura transversal: cliente Dio, config de entorno, base Drift (sin tablas todavía)
-        ├── shared/             # Vacío por ahora (widgets/utilidades compartidas entre features)
-        ├── providers/          # Providers Riverpod globales (ApiClient, AppDatabase)
-        ├── services/           # Vacío por ahora
-        ├── repositories/       # Vacío por ahora (repositorios genéricos, no ligados a un feature)
-        ├── models/             # Vacío por ahora (modelos genéricos, no ligados a un feature)
-        ├── features/           # Módulos por funcionalidad, cada uno en capas Data / Application / Presentation
-        │   └── water_tracking/     # Único módulo piloto implementado de extremo a extremo
-        │       ├── data/               # Modelos de API y repositorio (llamadas Dio al backend)
-        │       ├── application/        # Providers/controllers Riverpod del feature
-        │       └── presentation/       # Pantallas y widgets
-        └── main.dart           # Entry point (ProviderScope + navegación a las pantallas de water-tracking)
+└── kora-health-client/    # Cliente Angular (la aplicación se llama `kora-health-web` en angular.json y package.json)
+    ├── public/
+    │   └── assets/config.json  # Configuración en runtime (URL base de la API)
+    └── src/
+        ├── main.ts             # Punto de entrada; muestra un error visible si el arranque falla
+        ├── styles.scss         # Estilos globales
+        └── app/
+            ├── app.config.ts       # Proveedores globales (router, cliente HTTP, carga de config.json)
+            ├── app.routes.ts       # Rutas: /salud, /nutricion, /entrenamiento, /progreso, /perfil
+            ├── modules/app-container/  # Pantallas por funcionalidad
+            │   ├── home/               # Armazón: cabecera, navegación de cinco secciones y contenido
+            │   ├── nutrition/          # Única sección con contenido: hidratación (water-tracking)
+            │   ├── health/ workouts/ progress/ profile/   # Páginas vacías por ahora
+            │   └── shared/             # Componentes compartidos entre secciones
+            ├── services/           # Acceso a datos (base-http.service.ts, water-tracking.service.ts)
+            └── shared/             # Configuración, DTOs y helpers transversales
 ```
 
 ## Backend (`kora-health-api`)
@@ -60,7 +62,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=<tu-host-neo
 ```bash
 cd kora-health-api
 dotnet tool install --global dotnet-ef   # solo la primera vez
-dotnet ef database update --project src/Infrastructure/KoraHealth.Infrastructure.csproj --startup-project src/Application/KoraHealth.Application.csproj
+dotnet ef database update --project src/Infrastructure/KoraHealth.Api.Infrastructure.csproj --startup-project src/Application/KoraHealth.Api.Application.csproj
 ```
 
 ### Arrancar la API
@@ -72,40 +74,51 @@ dotnet run
 
 Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el usuario de prueba fijo si no existe. Por defecto escucha en `http://localhost:5001` (perfil `Development` en `launchSettings.json`). Se abre automáticamente el navegador en la UI interactiva de **Swagger** (`/swagger`) para probar los endpoints sin necesidad de Postman/curl.
 
+### CORS
+
+La API solo acepta peticiones de navegador desde los orígenes listados en `Cors:AllowedOrigins`. En desarrollo esa lista está en `kora-health-api/src/Application/appsettings.Development.json` y contiene `http://localhost:4200`, el servidor de desarrollo del cliente. Si sirves el cliente desde otro origen (otro puerto, otra máquina), añádelo ahí; fuera de desarrollo no hay ningún origen permitido por defecto.
+
 ## Cliente (`kora-health-client`)
 
 ### Requisitos
-- Flutter SDK (instalado en esta máquina en `C:\flutter`, clonado del repo oficial en la rama `stable`).
+- Node.js `^22.22.3`, `^24.15.0` o `>=26` (lo que exige Angular 22) y npm.
 - La API backend corriendo (ver sección anterior).
+
+Angular CLI no hace falta instalarlo globalmente: los scripts de npm usan el del proyecto, y para lo demás sirve `npx ng ...`.
 
 ### Instalar dependencias
 
 ```bash
 cd kora-health-client
-flutter pub get
+npm install
 ```
 
 ### Ejecutar la app
 
-La URL de la API se pasa por variable de entorno de compilación (`API_BASE_URL`), **y cambia según dónde corra el cliente**:
-
-| Destino | Comando | URL de la API |
-|---|---|---|
-| Chrome | `flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona tal cual |
-| Edge | `flutter run -d edge --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona tal cual |
-| Otro navegador (p. ej. Opera GX) | `flutter run -d web-server --web-port=8080 --dart-define=API_BASE_URL=http://localhost:5001` y luego abrir `http://localhost:8080` manualmente en ese navegador | `localhost` funciona tal cual |
-| Emulador Android | `flutter run -d emulator-5554 --dart-define=API_BASE_URL=http://10.0.2.2:5001` | **`10.0.2.2`**, no `localhost` — el emulador tiene su propia red virtual y `10.0.2.2` es la dirección especial que apunta al `localhost` de la máquina anfitriona |
-| Windows desktop | `flutter run -d windows --dart-define=API_BASE_URL=http://localhost:5001` | `localhost` funciona, pero requiere el workload "Desktop development with C++" de Visual Studio instalado (no incluido por defecto) |
-
-Ajusta el puerto al que realmente esté escuchando tu instancia de `dotnet run`.
-
-### Ver la lista de dispositivos/emuladores disponibles
-
 ```bash
-flutter devices      # dispositivos/navegadores ya conectados
-flutter emulators    # emuladores Android creados (arrancar con: flutter emulators --launch <id>)
+cd kora-health-client
+npm start
 ```
 
-### Ejecutar en un dispositivo distinto a Chrome/Edge (p. ej. Opera GX)
+Sirve la aplicación en `http://localhost:4200` y recarga al guardar. Está pensada para móvil: en pantallas estrechas la navegación de cinco secciones queda abajo, y a partir de 768 px de ancho sube a la cabecera.
 
-Flutter no detecta Opera GX como dispositivo porque busca navegadores concretos (Chrome, Edge). La solución es usar `-d web-server`, que sirve la app en un puerto local sin abrir ningún navegador, y abrir esa URL tú manualmente en el navegador que prefieras (ver tabla arriba). Con `web-server` no hay hot reload automático al guardar — pulsa `r` en la terminal donde corre `flutter run` para forzar un hot restart y luego recarga la pestaña.
+### URL de la API
+
+La URL base de la API no se fija al compilar: el cliente la lee al arrancar de `kora-health-client/public/assets/config.json`.
+
+```json
+{ "apiBaseUrl": "http://localhost:5001" }
+```
+
+Para apuntar a otra API basta con editar ese archivo (o el `assets/config.json` ya desplegado) y recargar; no hay que recompilar. Si el archivo falta o no trae `apiBaseUrl`, la aplicación no arranca y muestra el error en pantalla. Recuerda que el origen desde el que sirves el cliente tiene que estar permitido por CORS en la API.
+
+### Compilar, probar y lint
+
+```bash
+cd kora-health-client
+npm run build                 # compila a dist/kora-health-web
+npm test -- --watch=false     # pruebas unitarias (Vitest), una sola ejecución
+npx ng lint                   # angular-eslint
+```
+
+`npm test` a secas arranca en modo observación cuando se lanza desde una terminal interactiva.
