@@ -29,7 +29,7 @@ kora-health-client/    # Flutter client
 The connection string is never committed. It lives in `dotnet user-secrets` under `ConnectionStrings:DefaultConnection` and points to a PostgreSQL instance on Neon (see README for the format).
 
 ```bash
-# Run the API (http://localhost:5001, opens Scalar UI at /scalar/v1)
+# Run the API (http://localhost:5001, opens Swagger UI at /swagger)
 cd kora-health-api/src/Application && dotnet run
 
 # Build the whole solution

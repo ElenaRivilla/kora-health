@@ -70,7 +70,7 @@ cd kora-health-api/src/Application
 dotnet run
 ```
 
-Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el usuario de prueba fijo si no existe. Por defecto escucha en `http://localhost:5001` (perfil `Development` en `launchSettings.json`). Se abre automáticamente el navegador en la UI interactiva de **Scalar** (`/scalar/v1`) para probar los endpoints sin necesidad de Postman/curl.
+Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el usuario de prueba fijo si no existe. Por defecto escucha en `http://localhost:5001` (perfil `Development` en `launchSettings.json`). Se abre automáticamente el navegador en la UI interactiva de **Swagger** (`/swagger`) para probar los endpoints sin necesidad de Postman/curl.
 
 ## Cliente (`kora-health-client`)
 
