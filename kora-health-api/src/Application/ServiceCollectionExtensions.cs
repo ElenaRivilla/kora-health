@@ -1,6 +1,8 @@
 using KoraHealth.Application.Mappers;
+using KoraHealth.Application.Services.LocalDay;
 using KoraHealth.Application.Services.Profile;
 using KoraHealth.Application.Services.WaterTracking;
+using KoraHealth.Domain.Contracts.Services.LocalDay;
 using KoraHealth.Domain.Contracts.Services.Profile;
 using KoraHealth.Domain.Contracts.Services.WaterTracking;
 
@@ -13,6 +15,8 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfile).Assembly);
         services.AddScoped<IWaterTrackingService, WaterTrackingService>();
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<ILocalDayService, LocalDayService>();
 
         return services;
     }
