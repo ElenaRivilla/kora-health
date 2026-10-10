@@ -1,3 +1,4 @@
+using KoraHealth.Domain.Contracts.Repositories.Profile;
 using KoraHealth.Domain.Contracts.Repositories.WaterTracking;
 using KoraHealth.Infrastructure.EntityFramework;
 using KoraHealth.Infrastructure.Repositories.BBDD;
@@ -16,6 +17,7 @@ public static class InfrastructureServiceCollectionExtensions
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IWaterTrackingRepository, WaterTrackingRepository>();
+        services.AddScoped<IProfileRepository, ProfileRepository>();
 
         return services;
     }
