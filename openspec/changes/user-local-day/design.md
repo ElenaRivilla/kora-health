@@ -83,16 +83,19 @@ Motivación y alcance: ver `proposal.md` (Why, What Changes, Fuera de alcance). 
 
 La regla es una sola función de dominio que, dada una cadena, devuelve el identificador que se debe guardar o indica que no es válida:
 
-1. Se busca con `TimeZoneInfo.TryFindSystemTimeZoneById` (no lanza excepción).
-2. Si se encuentra, se exige además `HasIanaId`. Sin esta segunda comprobación la API aceptaría identificadores de Windows como `Romance Standard Time`, que .NET resuelve en cualquier plataforma (verificado en macOS).
-3. Se guarda el `Id` que devuelve el sistema, no la cadena recibida. En macOS eso normaliza `europe/madrid` a `Europe/Madrid`.
+1. **Se decide la grafía antes de pedir la zona al sistema.** Si la cadena coincide, sin distinguir mayúsculas, con una zona de la lista del sistema (`TimeZoneInfo.GetSystemTimeZones()`), se toma la grafía de la lista: `europe/madrid` pasa a `Europe/Madrid`. Si no está en la lista (alias como `Europe/Kiev`, `US/Pacific`, `Etc/UTC` o `CET`), solo se acepta con su grafía exacta, comprobada con `TimeZoneInfo.TryConvertIanaIdToWindowsId`, que sí distingue mayúsculas; mal escrito, se rechaza.
+2. Con la grafía ya decidida se busca la zona con `TimeZoneInfo.TryFindSystemTimeZoneById` (no lanza excepción).
+3. Si se encuentra, se exige además `HasIanaId`. Sin esta comprobación la API aceptaría identificadores de Windows como `Romance Standard Time`, que .NET resuelve en cualquier plataforma (verificado en macOS).
+4. Se guarda la grafía decidida en el paso 1, **no** el `Id` que devuelve el sistema.
+
+*Corrección tras la fase 2 (sección 1 de `tasks.md`).* La versión inicial de esta decisión buscaba la zona directamente con la cadena recibida y guardaba el `Id` devuelto, dando por hecho que el sistema lo normalizaba. La verificación contra la API real mostró que no es así: .NET devuelve como `Id` la grafía con la que se le pregunta por primera vez y la conserva en memoria durante toda la vida del proceso, de modo que un `PUT` con `europe/madrid` guardaba ese valor y hacía que un `PUT` posterior con `Europe/Madrid`, bien escrito, también lo guardara mal. Por eso la grafía se decide antes de consultar al sistema. El detalle está en `verification.md`.
 
 Reparto de responsabilidades: `SetTimeZoneRq.IsValid()` comprueba solo la forma (no vacío, sin espacios alrededor, longitud razonable); la comprobación contra la base de datos de zonas la hace el servicio con la función de dominio, porque es una regla de negocio y cualquier otro llamador futuro (por ejemplo el registro de `add-auth`) debe pasar por ella. Ante una zona no válida el servicio **no modifica nada** e informa al controlador, que responde `400` con un mensaje de texto plano, como el resto de la API. No se usa una excepción para este caso: sin middleware acabaría en `500`.
 
 Comportamientos que se aceptan de forma consciente:
 
 - **Alias antiguos** (`Europe/Kiev`, `US/Pacific`, `CET`) y `UTC` / `Etc/UTC` son válidos y se guardan tal cual: son identificadores IANA legítimos.
-- **Mayúsculas y minúsculas:** que `europe/madrid` se acepte depende del sistema de archivos (macOS lo acepta; en Linux es de esperar que se rechace). Lo que se guarda es correcto en ambos casos; la diferencia es solo que un valor mal escrito recibe `400` en un sitio y se normaliza en otro.
+- **Mayúsculas y minúsculas:** una zona de la lista del sistema se acepta con cualquier combinación de mayúsculas y se guarda con la grafía de la lista. Un alias que no está en la lista solo se acepta escrito exactamente. Ninguna petición puede alterar la grafía que reciben las siguientes. Verificado en macOS; la lista del sistema y los alias disponibles pueden variar entre sistemas operativos.
 - **Windows:** los identificadores IANA se resuelven mediante ICU, presente por defecto en las versiones de Windows con soporte. No debe activarse `InvariantGlobalization` en la API (hoy no lo está).
 - **Zona almacenada que deja de resolverse** (base de datos de zonas distinta entre máquinas, o un valor editado a mano en la base de datos): al calcular el día local se usa la zona por defecto y se registra un aviso en el log, en vez de fallar con `500` en todas las consultas del usuario. `GET /api/profile/time-zone` devuelve el valor almacenado sin maquillarlo.
 
@@ -192,7 +195,7 @@ Las fechas esperadas de los pasos 2 a 4 no dependen del día en que se ejecute l
 - **[La instantánea de EF no refleja los nombres actuales de las entidades]** → Al generar la migración, comprobar que contiene únicamente la columna nueva de `users`. Si aparece cualquier otra operación (renombrados, recreación de tablas), parar e informar antes de aplicarla: la API aplica las migraciones pendientes al arrancar contra la base de datos real.
 - **[El valor de relleno que propone `dotnet ef` es una cadena vacía]** → Decisión 1: se corrige a mano y la fase 2 lo comprueba leyendo la fila del usuario de prueba tras arrancar.
 - **[Buscar la zona no basta: .NET acepta identificadores de Windows]** → Decisión 3: se exige `HasIanaId`, con prueba unitaria y paso 6 de la verificación.
-- **[Comportamiento distinto entre sistemas operativos]** (mayúsculas, alias disponibles, versión de la base de datos de zonas) → Se guarda el identificador que devuelve el sistema; una zona almacenada que no se resuelva usa la zona por defecto con aviso en el log. Solo se ha verificado en macOS.
+- **[Comportamiento distinto entre sistemas operativos]** (mayúsculas, alias disponibles, versión de la base de datos de zonas) → La grafía se decide antes de consultar al sistema (decisión 3), nunca se guarda el `Id` que este devuelve; una zona almacenada que no se resuelva usa la zona por defecto con aviso en el log. Solo se ha verificado en macOS.
 - **[Zonas cuya medianoche no existe o se repite]** → Decisión 5: regla explícita para el inicio del día y prueba con `America/Havana`. La salvaguarda de la decisión 6 evita resultados erróneos aunque el límite calculado fuese impreciso.
 - **[Cambiar de zona reescribe el pasado]** → Comportamiento aceptado y documentado. Será relevante para el change posterior de historial de objetivos y estadísticas, que tendrá que decidir si «el objetivo de aquel día» se ancla a un día local o a un instante.
 - **[El valor por defecto `Europe/Madrid` es incorrecto para usuarios de otros países]** → Hoy solo hay un usuario. `add-auth` deberá decidir qué zona recibe quien se registra (Open Questions 2).
@@ -228,7 +231,7 @@ Ninguna bloquea las fases. En cada una se indica el valor por defecto con el que
 
 1. **¿`update-profile` editará la zona desde su formulario y absorberá el endpoint en `/api/profile`?** **Por defecto: no. El subrecurso `/api/profile/time-zone` se mantiene como única vía y `update-profile` lo decide en su propio diseño.**
 2. **¿Qué zona recibe un usuario que se registra con `add-auth`?** **Por defecto: la constante `Europe/Madrid`, hasta que `add-auth` o un change de autodetección decidan pedirla o proponerla.**
-3. **¿Se canonizan los alias antiguos (`Europe/Kiev` → `Europe/Kyiv`)?** **Por defecto: no; se guarda el identificador tal como lo devuelve el sistema.**
+3. **¿Se canonizan los alias antiguos (`Europe/Kiev` → `Europe/Kyiv`)?** **Por defecto: no; un alias válido se guarda tal como se recibe.**
 4. **`days` no se valida en el controlador**: un valor menor o igual que cero provoca hoy un `500` y no hay máximo. Es previo a este change. **Por defecto: no se toca aquí; queda anotado para un change de saneamiento de la API.**
 5. **¿Debe la respuesta del historial incluir la zona con la que se calculó?** Ayudaría a un cliente a explicar las fechas. **Por defecto: no; la forma del contrato no cambia (decisión 7).**
 6. **Versión de xUnit y utilidades de tiempo para pruebas.** **Por defecto: lo que genere la plantilla `dotnet new xunit` del SDK instalado, sin paquetes adicionales; la fase 3 documenta la versión resultante.**
