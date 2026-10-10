@@ -1,0 +1,21 @@
+@if (state.historyError(); as error) {
+  <p class="water-history__status water-history__status--error" role="alert">Error: {{ error }}</p>
+} @else if (state.historyLoading()) {
+  <p class="water-history__status" role="status">Cargando…</p>
+} @else {
+  <!-- An empty history renders an empty list, with no message, as in the previous client. -->
+  <ul class="water-history__list">
+    @for (day of state.history(); track day.date) {
+      <li class="water-history__day">
+        <span class="water-history__date">{{ day.date }}</span>
+        <span class="water-history__total">
+          @if (day.goalMl !== null && day.goalMl !== undefined) {
+            {{ day.totalMl }} ml / {{ day.goalMl }} ml
+          } @else {
+            {{ day.totalMl }} ml
+          }
+        </span>
+      </li>
+    }
+  </ul>
+}

@@ -2,7 +2,9 @@
 
 ## Purpose
 Proporcionar las capacidades de IA transversales usadas en toda la app: reconocimiento de alimentos y estimación de cantidades a partir de imágenes, explicación del score nutricional, recomendaciones dietéticas y deportivas, análisis de tendencias, resúmenes personalizados, y preguntas y respuestas contextuales sobre los datos del usuario — todo procesado por el backend.
+
 ## Requirements
+
 ### Requirement: Reconocimiento de Alimentos a partir de Imágenes
 El sistema SHALL usar IA para reconocer los alimentos presentes en una imagen enviada por el usuario y SHALL estimar la cantidad de cada alimento reconocido.
 
@@ -42,5 +44,5 @@ El sistema SHALL permitir al usuario hacer preguntas en formato libre y SHALL re
 El sistema SHALL procesar todas las solicitudes de IA en el backend, el cual SHALL reenviar la solicitud (imagen, pregunta o contexto) al proveedor de IA correspondiente y devolver la respuesta al cliente.
 
 #### Escenario: El cliente nunca llama directamente al proveedor de IA
-- **CUANDO** el cliente Flutter necesita un resultado generado por IA
+- **CUANDO** el cliente necesita un resultado generado por IA
 - **ENTONCES** envía las imágenes, preguntas o contexto necesarios al backend, y es el backend el componente que se comunica con el proveedor de IA
