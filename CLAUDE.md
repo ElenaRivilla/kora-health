@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kora Health is in an **early implementation phase**. Both apps are scaffolded and one pilot module is implemented end to end; everything else exists only as specs.
 
-- **Implemented**: `water-tracking` (backend endpoints + Angular screens), verified end to end against the real backend (`openspec/changes/migrate-client-to-angular/verification.md`). The spec's "estadísticas resumidas" are not implemented anywhere yet: the API only returns daily totals.
+- **Implemented**: `water-tracking` (backend endpoints + Angular screens), verified end to end against the real backend (`openspec/changes/archive/2026-10-11-migrate-client-to-angular/verification.md`). The spec's "estadísticas resumidas" are not implemented anywhere yet: the API only returns daily totals.
 - **Client is Angular**: the original Flutter client was removed; `kora-health-client/` now holds the Angular app. It is a web app designed mobile-first. Reading HealthKit will require packaging it for iOS with Capacitor, which is planned for a later change and not started.
 - **No real authentication yet**: the backend attributes every request to a single seeded user (`FixedTestUser`, id `1`, username `dev-test-user`). The client sends no credentials.
 - **No offline cache yet**: the client has no local storage and calls the API directly. The local-storage technology for the web client is undecided and belongs to the `sync` implementation.
@@ -74,16 +74,15 @@ This project uses the [OpenSpec](https://openspec.dev) spec-driven workflow (`sc
 
 - `openspec/specs/<capability>/spec.md` — the 11 approved capabilities (current, authoritative state).
 - `openspec/changes/<slug>/` — changes in flight, each with `proposal.md`, `design.md`, `tasks.md` and a `specs/` delta.
-- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`.
+- `openspec/changes/archive/<date>-<slug>/` — completed changes: `define-initial-specs`, `refine-sync-spec`, `scaffold-and-water-tracking-pilot`, `migrate-client-to-angular`.
 - `openspec/specs/initial/ARQUITECTURA.md` and `FUNCIONALIDADES.md` — the original unstructured notes the first change was based on. Their content is now covered by the formal specs; removing this folder was deliberately deferred by the user and is still pending.
 
 When asked to build a feature, start a new OpenSpec change (proposal + tasks + spec deltas) before writing implementation code, following the structure of the archived changes. Validate with `openspec validate` before archiving. The `/opsx:*` commands and `openspec-*` skills in `.claude/` drive this workflow.
 
 ### Active changes
 
-- `migrate-client-to-angular` — replaces the Flutter client with the Angular one. Implemented and verified; only closing and archiving remain (section 6 of its `tasks.md`).
-- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for Angular and depend on `migrate-client-to-angular`.
-- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for Angular and depend on `migrate-client-to-angular`.
+- `add-auth` (proposed, not started) — introduces the `auth` capability: self-registration and login with email + password, JWT issued by the backend, hashed passwords. Replaces the fixed test user. Its client tasks are written for the Angular client.
+- `update-profile` (proposed, not started) — pins down the personal-data fields in `profile`, adds weight updates from HealthKit via `health` (latest measurement wins), and requires connectivity to edit the profile. Its client tasks are written for the Angular client.
 
 Known issue: there is no `openspec/specs/auth/spec.md`. The interim "fixed development user" `auth` delta exists only inside the archived scaffold change, although `FixedTestUser.cs` and the README refer to it as if it were a main spec.
 
