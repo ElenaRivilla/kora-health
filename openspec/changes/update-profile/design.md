@@ -31,3 +31,4 @@
 
 - ¿Cómo se resuelve el solapamiento entre "Account Management" de `profile` y la nueva capability `auth`? Queda pendiente de un change futuro.
 - ¿Debe `profile` exponer también la fecha/origen de la última medición de peso, o solo el valor?
+- La zona horaria del usuario ya existe desde el change `user-local-day`, como subrecurso `GET` / `PUT /api/profile/time-zone`. Queda por decidir si se edita desde el formulario de perfil de este change y si ese endpoint se absorbe en un `/api/profile` general. Mientras no se decida, el subrecurso es la única vía para consultarla y cambiarla.

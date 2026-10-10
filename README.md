@@ -17,11 +17,13 @@ El proyecto sigue un flujo **spec-driven** con [OpenSpec](https://openspec.dev) 
 kora-health/
 ├── openspec/              # Specs (fuente de verdad) y changes (propuestas)
 ├── kora-health-api/       # Backend ASP.NET Core
-│   └── src/
-│       ├── Domain/            # Modelos EF, contratos (interfaces), DTOs de dominio
-│       ├── Application/       # Proyecto host (Program.cs, Controllers, Services, DTOs de API, AutoMapper)
-│       ├── Infrastructure/    # DbContext, repositorios EF Core
-│       └── Common/            # Vacío por ahora
+│   ├── src/
+│   │   ├── Domain/            # Modelos EF, contratos (interfaces), DTOs de dominio, cálculo de día local
+│   │   ├── Application/       # Proyecto host (Program.cs, Controllers, Services, DTOs de API, AutoMapper)
+│   │   ├── Infrastructure/    # DbContext, repositorios EF Core
+│   │   └── Common/            # Vacío por ahora
+│   └── tests/
+│       └── Application.Tests/ # Pruebas xUnit (día local, validación de zona horaria, historial de agua)
 └── kora-health-client/    # Cliente Angular (la aplicación se llama `kora-health-web` en angular.json y package.json)
     ├── public/
     │   └── assets/config.json  # Configuración en runtime (URL base de la API)
@@ -77,6 +79,31 @@ Al arrancar, la API aplica migraciones pendientes automáticamente y siembra el 
 ### CORS
 
 La API solo acepta peticiones de navegador desde los orígenes listados en `Cors:AllowedOrigins`. En desarrollo esa lista está en `kora-health-api/src/Application/appsettings.Development.json` y contiene `http://localhost:4200`, el servidor de desarrollo del cliente. Si sirves el cliente desde otro origen (otro puerto, otra máquina), añádelo ahí; fuera de desarrollo no hay ningún origen permitido por defecto.
+
+### Zona horaria del usuario y día local
+
+Cada usuario tiene una zona horaria guardada en el servidor (identificador IANA). El usuario de prueba recibe `Europe/Madrid` por defecto. «El día» es el día natural en esa zona y lo calcula la API: el historial de agua (`GET /api/water-tracking/history`) agrupa las entradas por el día local del usuario, no por la fecha UTC, y cuenta la ventana de `days` en días locales. Las entradas se siguen guardando como instantes UTC, así que al cambiar de zona el historial se reagrupa sin modificar ningún dato.
+
+La zona se consulta y se cambia en `/api/profile/time-zone`:
+
+```bash
+curl -s http://localhost:5001/api/profile/time-zone
+```
+
+```bash
+curl -s -X PUT http://localhost:5001/api/profile/time-zone -H "Content-Type: application/json" -d '{"timeZoneId":"Europe/Madrid"}'
+```
+
+- `200` con `{"timeZoneId":"Europe/Madrid"}` en ambos casos. Una zona conocida escrita con otras mayúsculas (`europe/madrid`) se acepta y se guarda bien escrita.
+- `400` con un mensaje de texto si el valor no es un identificador IANA válido (`Foo/Bar`, un identificador de Windows como `Romance Standard Time`, la cadena vacía); la zona anterior se conserva.
+
+### Pruebas del backend
+
+El backend tiene un proyecto de pruebas, `kora-health-api/tests/Application.Tests/` (xUnit), limitado a la lógica de día local, la validación de la zona horaria y el historial de agua. No necesita base de datos ni red:
+
+```bash
+cd kora-health-api && dotnet test KoraHealth.Api.slnx
+```
 
 ## Cliente (`kora-health-client`)
 
