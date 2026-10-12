@@ -1,9 +1,7 @@
+@use 'mixins';
+
 :host {
   display: block;
-}
-
-.water-history__status--error {
-  color: var(--color-error);
 }
 
 .water-history__list {
@@ -14,10 +12,17 @@
 .water-history__day {
   display: flex;
   flex-direction: column;
-  padding-block: 0.5rem;
+  padding-block: var(--space-3);
+
+  & + & {
+    border-block-start: var(--border-width) solid var(--color-border);
+  }
+}
+
+.water-history__date {
+  @include mixins.text-body;
 }
 
 .water-history__total {
-  color: var(--color-on-surface-variant);
-  font-size: 0.875rem;
+  @include mixins.text-caption;
 }

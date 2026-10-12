@@ -1,0 +1,48 @@
+@use 'mixins';
+
+// Not encapsulated (the input is projected from the consumer): every rule starts with `.field`.
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field__label {
+  @include mixins.text-label;
+
+  color: var(--color-text-secondary);
+}
+
+.field .field__input {
+  @include mixins.control-pill;
+
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  font-family: inherit;
+  // 16 px or more, so that Safari on iOS does not zoom in when the field gets the focus.
+  font-size: var(--font-size-md);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+}
+
+.field__hint {
+  @include mixins.text-caption;
+}
+
+.field__error {
+  @include mixins.text-label;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-danger);
+}
+
+.field__error-icon {
+  --ng-icon__size: var(--size-icon-sm);
+
+  flex: none;
+}

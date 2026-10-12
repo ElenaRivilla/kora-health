@@ -1,0 +1,82 @@
+@use 'mixins';
+
+:host {
+  @include mixins.text-body;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--size-touch);
+  padding: var(--space-2) var(--space-5);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  // Square touch target over the whole box: the browser does not take taps on the rounded
+  // corners of the button itself (a circular icon-only button would lose its corners).
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+}
+
+:host(.app-button--primary) {
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+
+  &:hover:not(:disabled, [aria-disabled='true']),
+  &:active:not(:disabled, [aria-disabled='true']) {
+    @include mixins.pressed-fill(--color-accent);
+  }
+}
+
+:host(.app-button--secondary) {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+
+  &:hover:not(:disabled, [aria-disabled='true']),
+  &:active:not(:disabled, [aria-disabled='true']) {
+    @include mixins.pressed-fill(--color-surface-raised);
+  }
+}
+
+:host(.app-button--danger) {
+  background-color: var(--color-danger-fill);
+  color: var(--color-on-danger);
+
+  &:hover:not(:disabled, [aria-disabled='true']),
+  &:active:not(:disabled, [aria-disabled='true']) {
+    @include mixins.pressed-fill(--color-danger-fill);
+  }
+}
+
+:host(.app-button--icon-only) {
+  width: var(--size-touch);
+  height: var(--size-touch);
+  padding: 0;
+  border-radius: 50%;
+}
+
+// Disabled: native `disabled` on <button>, `aria-disabled` on <a>. Wins over every variant.
+:host(:disabled),
+:host([aria-disabled='true']) {
+  border-color: transparent;
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+:host([aria-disabled='true']) {
+  pointer-events: none;
+}

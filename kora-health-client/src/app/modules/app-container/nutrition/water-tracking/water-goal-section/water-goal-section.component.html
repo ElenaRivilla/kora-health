@@ -1,7 +1,7 @@
 @if (state.goalError(); as error) {
-  <p class="water-goal__status water-goal__status--error" role="alert">Error: {{ error }}</p>
+  <app-status-message kind="error">Error: {{ error }}</app-status-message>
 } @else if (state.goalLoading()) {
-  <p class="water-goal__status" role="status">Cargando…</p>
+  <app-status-message kind="loading">Cargando…</app-status-message>
 } @else if (state.goal(); as goal) {
   <p class="water-goal__current">Objetivo actual: {{ goal.dailyGoalMl }} ml</p>
 } @else {
@@ -9,15 +9,16 @@
 }
 
 <form class="water-goal__form" (submit)="save($event, goalInput)">
-  <label class="water-goal__label" for="water-goal-input">Nuevo objetivo (ml)</label>
-  <input
-    #goalInput
-    id="water-goal-input"
-    class="water-goal__input"
-    type="number"
-    inputmode="numeric"
-    min="1"
-    step="1"
-  />
-  <button class="button" type="submit">Guardar objetivo</button>
+  <app-field class="water-goal__field" label="Nuevo objetivo (ml)">
+    <input
+      #goalInput
+      appInput
+      id="water-goal-input"
+      type="number"
+      inputmode="numeric"
+      min="1"
+      step="1"
+    />
+  </app-field>
+  <button appButton type="submit">Guardar objetivo</button>
 </form>

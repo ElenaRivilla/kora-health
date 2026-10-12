@@ -1,10 +1,10 @@
+// The page margin comes from the shell; the page only spaces its blocks.
 :host {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
+  gap: var(--space-4);
 }
 
 .nutrition-page__quick-log {
-  margin-block-end: 1rem;
+  margin-block-end: var(--space-4);
 }

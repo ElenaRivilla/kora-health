@@ -36,12 +36,12 @@ describe('NutritionPageComponent', () => {
   });
 
   it('should render the hydration card and the hydration history card', () => {
-    const titles = Array.from(element.querySelectorAll('app-section-card h2')).map((title) =>
+    const titles = Array.from(element.querySelectorAll('app-card h2')).map((title) =>
       title.textContent?.trim(),
     );
     expect(titles).toEqual(['Hidratación', 'Historial de hidratación']);
 
-    const cards = element.querySelectorAll('app-section-card');
+    const cards = element.querySelectorAll('app-card');
     expect(cards[0].querySelector('app-water-goal-section')).not.toBeNull();
     expect(cards[1].querySelector('app-water-quick-log')).not.toBeNull();
     expect(cards[1].querySelector('app-water-history-section')).not.toBeNull();

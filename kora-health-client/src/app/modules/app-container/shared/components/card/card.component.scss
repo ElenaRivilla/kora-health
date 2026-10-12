@@ -1,0 +1,45 @@
+@use 'mixins';
+
+:host {
+  display: block;
+}
+
+.card {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-block-end: var(--space-4);
+}
+
+// The title wraps onto several lines before it pushes the control out of the card.
+.card__heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.card__title {
+  @include mixins.text-title-card;
+
+  overflow-wrap: anywhere;
+}
+
+.card__subtitle {
+  @include mixins.text-caption;
+
+  margin-block-start: var(--space-1);
+}
+
+.card__control {
+  flex: none;
+
+  &:empty {
+    display: none;
+  }
+}

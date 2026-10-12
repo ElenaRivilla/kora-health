@@ -8,16 +8,21 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { filter, map } from 'rxjs';
+import { HOME_DESTINATIONS, HOME_ICONS } from './home-destinations';
 
 interface NavDestination {
   path: string;
   label: string;
+  icon: string;
+  activeIcon: string;
 }
 
 /** Application shell: header with the active section title, section navigation and content outlet. */
 @Component({
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [NgIcon, RouterLink, RouterLinkActive, RouterOutlet],
+  providers: [provideIcons(HOME_ICONS)],
   selector: 'app-home',
   styleUrl: './home.component.scss',
   templateUrl: './home.component.html',
@@ -26,12 +31,22 @@ export class HomeComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  // Labels come from the titles declared on the child routes, so they are written only once.
-  protected readonly destinations: NavDestination[] = (
-    this.route.routeConfig?.children ?? []
-  ).flatMap((child) =>
-    child.path && typeof child.title === 'string' ? [{ path: child.path, label: child.title }] : [],
-  );
+  // Labels come from the titles declared on the child routes, so they are written only once;
+  // a destination may replace its title with a short label.
+  protected readonly destinations: NavDestination[] = HOME_DESTINATIONS.flatMap((destination) => {
+    const child = this.route.routeConfig?.children?.find((route) => route.path === destination.path);
+    if (typeof child?.title !== 'string') {
+      return [];
+    }
+    return [
+      {
+        path: destination.path,
+        label: destination.shortLabel ?? child.title,
+        icon: destination.icon,
+        activeIcon: destination.activeIcon,
+      },
+    ];
+  });
 
   protected readonly title = toSignal(
     this.router.events.pipe(

@@ -1,0 +1,85 @@
+<app-card title="Catálogo de componentes" subtitle="Solo en desarrollo. Datos fijos.">
+  <div class="catalog__row" role="group" aria-label="Tema">
+    @for (preference of preferences; track preference.value) {
+      <button
+        [appButton]="theme.preference() === preference.value ? 'primary' : 'secondary'"
+        type="button"
+        [attr.aria-pressed]="theme.preference() === preference.value"
+        (click)="theme.setPreference(preference.value)"
+      >
+        {{ preference.label }}
+      </button>
+    }
+  </div>
+  <p class="catalog__note">Tema efectivo: {{ theme.theme() }}</p>
+</app-card>
+
+<app-card title="Botón">
+  <div class="catalog__row">
+    <button appButton type="button">Principal</button>
+    <button appButton="secondary" type="button">Secundario</button>
+    <button appButton="danger" type="button">Peligro</button>
+  </div>
+  <div class="catalog__row">
+    <button appButton type="button" disabled>Deshabilitado</button>
+    <button appButton="secondary" iconOnly type="button" aria-label="Más opciones">⋯</button>
+    <a appButton="secondary" href="#catalogo-enlace" id="catalogo-enlace">Enlace como botón</a>
+  </div>
+</app-card>
+
+<app-card title="Tarjeta sola">
+  <p>Cuerpo de una tarjeta con título y sin subtítulo.</p>
+</app-card>
+
+<app-card title="Tarjeta con subtítulo" subtitle="Texto secundario bajo el título">
+  <p>Cuerpo de la tarjeta.</p>
+</app-card>
+
+<app-card title="Tarjeta con control" subtitle="Últimos días">
+  <app-compact-select appCardControl label="Periodo" [options]="periods" [(value)]="period" />
+  <p>Periodo elegido: {{ period() }}</p>
+</app-card>
+
+<app-card
+  title="Una tarjeta con un título muy largo que se parte en varias líneas antes que empujar el control"
+>
+  <app-compact-select appCardControl label="Periodo" [options]="periods" [(value)]="period" />
+  <p>El control se queda dentro de la tarjeta.</p>
+</app-card>
+
+<app-card title="Campo de texto">
+  <div class="catalog__stack">
+    <app-field label="Normal">
+      <input appInput type="text" />
+    </app-field>
+    <app-field label="Con ayuda" hint="Un texto que explica qué escribir">
+      <input appInput type="number" inputmode="numeric" />
+    </app-field>
+    <app-field label="Con error" error="El valor no es válido">
+      <input appInput type="text" value="abc" />
+    </app-field>
+  </div>
+</app-card>
+
+<app-card title="Mensaje de estado">
+  <div class="catalog__stack">
+    <app-status-message kind="loading">Cargando…</app-status-message>
+    <app-status-message kind="error">Error: sin conexión</app-status-message>
+    <app-status-message kind="error" retryLabel="Reintentar" (retry)="retries.set(retries() + 1)">
+      Error: sin conexión
+    </app-status-message>
+    <p class="catalog__note">Reintentos: {{ retries() }}</p>
+    <app-status-message kind="empty">Todavía no hay registros</app-status-message>
+  </div>
+</app-card>
+
+<app-card title="Colores por papel">
+  <ul class="catalog__swatches">
+    @for (role of colorRoles; track role) {
+      <li class="catalog__swatch">
+        <span class="catalog__swatch-color" [style.background-color]="'var(' + role + ')'"></span>
+        <code>{{ role }}</code>
+      </li>
+    }
+  </ul>
+</app-card>
