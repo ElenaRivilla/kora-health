@@ -1,12 +1,12 @@
 # Spec Delta
 
 ## Purpose
-Definir el armazón y la apariencia comunes de la aplicación cliente: la navegación principal entre sus cinco secciones, el título de la vista actual, los temas claro y oscuro, el color de acento único y las garantías de accesibilidad y de uso en móvil que cumplen todas las vistas.
+Definir el armazón y la apariencia comunes de la aplicación cliente: la navegación principal entre sus cinco secciones, el título de la vista actual, los temas claro y oscuro, el color de acento único y las garantías de accesibilidad, de movimiento reducido y de uso en móvil que cumplen todas las vistas.
 
 ## ADDED Requirements
 
 ### Requirement: Navegación Principal entre Secciones
-La aplicación SHALL ofrecer en todas sus vistas una navegación principal con sus cinco secciones (Salud, Nutrición, Entrenamiento, Progreso y Perfil), cada una con un icono y una etiqueta de texto. La navegación SHALL indicar cuál es la sección actual, también cuando el usuario está en una vista interior de esa sección. Si una etiqueta se muestra abreviada, la aplicación SHALL conservar el nombre completo de la sección para las tecnologías de apoyo.
+La aplicación SHALL ofrecer en todas sus vistas una navegación principal con sus cinco secciones (Salud, Nutrición, Entrenamiento, Progreso y Perfil), cada una con un icono y una etiqueta de texto. La navegación SHALL indicar cuál es la sección actual, también cuando el usuario está en una vista interior de esa sección. Si una etiqueta se muestra abreviada, la aplicación SHALL anunciarla a las tecnologías de apoyo tal como se ve, y el nombre completo de la sección SHALL mostrarse en el título de la vista.
 
 #### Escenario: Cambio de sección
 - **CUANDO** el usuario, desde cualquier vista, elige otra sección en la navegación principal
@@ -21,8 +21,8 @@ La aplicación SHALL ofrecer en todas sus vistas una navegación principal con s
 - **ENTONCES** la navegación principal sigue indicando Nutrición como sección actual
 
 #### Escenario: Etiqueta abreviada
-- **CUANDO** la etiqueta de la sección Entrenamiento se muestra abreviada en la navegación principal
-- **ENTONCES** un lector de pantalla anuncia ese destino con el nombre completo «Entrenamiento»
+- **CUANDO** la etiqueta de la sección Entrenamiento se muestra abreviada como «Entreno» en la navegación principal
+- **ENTONCES** un lector de pantalla anuncia ese destino como «Entreno», igual que el texto que se ve, y al abrirlo el título de la vista muestra el nombre completo «Entrenamiento»
 
 ### Requirement: Dirección Propia de Cada Sección
 Cada sección SHALL tener una dirección propia, de modo que se pueda abrir directamente, recargar y compartir, y que los controles «atrás» y «adelante» del navegador recorran las secciones visitadas. La aplicación SHALL abrir la sección Salud cuando se accede a ella sin indicar ninguna sección, y SHALL NOT mostrar una vista vacía o de error ante una dirección que no corresponde a ninguna vista.
@@ -117,6 +117,21 @@ Todos los controles interactivos de la aplicación SHALL poder alcanzarse y acci
 #### Escenario: Error sin depender del color
 - **CUANDO** una vista muestra un error o un aviso
 - **ENTONCES** lo comunica con un texto, y no solo con un cambio de color
+
+### Requirement: Respeto del Movimiento Reducido
+La aplicación SHALL respetar la preferencia de movimiento reducido del sistema del usuario: cuando está activada, las animaciones y transiciones no esenciales SHALL desactivarse o sustituirse por un cambio instantáneo. El resultado final de cada cambio SHALL ser el mismo con y sin movimiento, y ninguna información SHALL depender únicamente de una animación.
+
+#### Escenario: Cambio instantáneo con movimiento reducido
+- **CUANDO** el usuario tiene activada en su sistema la preferencia de movimiento reducido y realiza una acción que sin esa preferencia se presenta con una animación
+- **ENTONCES** la aplicación muestra el resultado de inmediato, sin animación, y ese resultado es el mismo que tendría con movimiento
+
+#### Escenario: Estado de carga sin animación
+- **CUANDO** una vista está cargando datos y el usuario tiene activada la preferencia de movimiento reducido
+- **ENTONCES** la vista sigue indicando con un texto que está cargando, sin ningún elemento en movimiento continuo
+
+#### Escenario: La preferencia cambia con la aplicación abierta
+- **CUANDO** el usuario activa la preferencia de movimiento reducido en su sistema mientras tiene abierta la aplicación
+- **ENTONCES** la aplicación deja de animar sin que el usuario tenga que recargar
 
 ### Requirement: Tamaño Mínimo de las Zonas Táctiles
 Todo control interactivo de la aplicación SHALL ofrecer una zona táctil de al menos 44 por 44 puntos CSS, aunque su parte visible sea más pequeña, y las zonas táctiles de controles contiguos SHALL NOT solaparse.
