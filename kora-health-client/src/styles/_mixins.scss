@@ -1,0 +1,74 @@
+// Mixins shared by component styles. This file emits no CSS on its own.
+// Import it from a component with `@use 'mixins';`.
+
+// Named text styles.
+@mixin text-title-page {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+@mixin text-title-card {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+@mixin text-body {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+}
+
+@mixin text-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-base);
+}
+
+@mixin text-caption {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+}
+
+@mixin text-nav {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+@mixin text-figure {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+// Wide screens (768 px and up). A media query cannot read a CSS variable, hence a mixin.
+@mixin wide {
+  @media (min-width: 48rem) {
+    @content;
+  }
+}
+
+// Minimum touch target of every interactive control.
+@mixin touch-target {
+  min-width: var(--size-touch);
+  min-height: var(--size-touch);
+}
+
+// Hover and pressed state of a filled control: its fill darkened with 8 % black, which keeps
+// the contrast of the ui-foundation design in both themes. `$fill` is a colour role variable.
+@mixin pressed-fill($fill) {
+  background-color: color-mix(in srgb, var(#{$fill}) 92%, var(--color-shade));
+}
+
+// Pill-shaped control on a raised surface, delimited by a 3:1 border (fields, selects).
+@mixin control-pill {
+  min-height: var(--size-touch);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}

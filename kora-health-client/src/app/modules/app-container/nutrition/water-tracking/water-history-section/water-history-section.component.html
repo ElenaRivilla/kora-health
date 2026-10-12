@@ -1,7 +1,7 @@
 @if (state.historyError(); as error) {
-  <p class="water-history__status water-history__status--error" role="alert">Error: {{ error }}</p>
+  <app-status-message kind="error">Error: {{ error }}</app-status-message>
 } @else if (state.historyLoading()) {
-  <p class="water-history__status" role="status">Cargando…</p>
+  <app-status-message kind="loading">Cargando…</app-status-message>
 } @else {
   <!-- An empty history renders an empty list, with no message, as in the previous client. -->
   <ul class="water-history__list">

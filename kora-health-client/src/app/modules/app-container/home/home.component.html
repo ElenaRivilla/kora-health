@@ -1,4 +1,6 @@
 <header class="home__header">
+  <!-- Reserved for a future back button; empty and without width for now. -->
+  <div class="home__leading"></div>
   <h1 class="home__title">{{ title() }}</h1>
 </header>
 
@@ -12,7 +14,10 @@
           routerLinkActive="home__nav-link--active"
           ariaCurrentWhenActive="page"
         >
-          {{ destination.label }}
+          <!-- Both icons are always rendered; CSS shows the fill one only on the active destination. -->
+          <ng-icon class="home__icon home__icon--outline" [name]="destination.icon" />
+          <ng-icon class="home__icon home__icon--fill" [name]="destination.activeIcon" />
+          <span class="home__nav-label">{{ destination.label }}</span>
         </a>
       </li>
     }

@@ -47,6 +47,19 @@ export const routes: Routes = [
             (m) => m.ProfilePageComponent,
           ),
       },
+      // Component catalog, development builds only (`ngDevMode` is false in production, so the
+      // route and its chunk are dropped). It has no title: it is not a navigation destination.
+      ...(typeof ngDevMode === 'undefined' || ngDevMode
+        ? [
+            {
+              path: 'catalogo',
+              loadComponent: () =>
+                import('./modules/app-container/catalog/catalog-page.component').then(
+                  (m) => m.CatalogPageComponent,
+                ),
+            },
+          ]
+        : []),
     ],
   },
   { path: '**', redirectTo: '' },

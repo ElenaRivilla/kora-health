@@ -1,0 +1,13 @@
+<p class="status-message status-message--{{ kind() }}" [attr.role]="role()">
+  @if (kind() === 'loading') {
+    <ng-icon class="status-message__icon status-message__icon--spinning" name="phosphorCircleNotch" />
+  } @else if (kind() === 'error') {
+    <ng-icon class="status-message__icon" name="phosphorWarningCircle" />
+  }
+  <span class="status-message__text"><ng-content /></span>
+</p>
+@if (kind() === 'error' && retryLabel(); as label) {
+  <button class="status-message__retry" appButton="secondary" type="button" (click)="retry.emit()">
+    {{ label }}
+  </button>
+}

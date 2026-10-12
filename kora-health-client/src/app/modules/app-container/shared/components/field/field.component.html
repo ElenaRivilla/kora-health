@@ -1,0 +1,11 @@
+<label class="field__label" [for]="input().id">{{ label() }}</label>
+<ng-content />
+@if (hint(); as hint) {
+  <p class="field__hint" [id]="input().id + '-hint'">{{ hint }}</p>
+}
+@if (error(); as error) {
+  <p class="field__error" [id]="input().id + '-error'">
+    <ng-icon class="field__error-icon" name="phosphorWarningCircle" />
+    <span>{{ error }}</span>
+  </p>
+}
