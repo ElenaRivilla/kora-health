@@ -1,0 +1,57 @@
+// Global base: reset, body typography, the focus ring and the reduced-motion safety net.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+// One focus ring for the whole app. Components do not redefine it, except to adjust the offset.
+:focus-visible {
+  outline: 0.125rem solid var(--color-focus-ring);
+  outline-offset: 0.125rem;
+}
+
+// Safety net for animations and transitions that do not use the `--duration-*` tokens
+// (those already drop to 0s in _tokens.scss).
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Shown by main.ts when the application cannot start (e.g. the runtime config is missing).
+.startup-error {
+  margin: 2rem 1rem;
+  color: var(--color-danger);
+  font-weight: var(--font-weight-medium);
+}

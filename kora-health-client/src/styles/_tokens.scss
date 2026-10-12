@@ -1,0 +1,159 @@
+@use 'sass:map';
+
+// Design tokens: every colour, size and timing of the app lives here, named by role.
+// Components use the roles (`--color-*`, `--space-*`…), never literal values.
+//
+// Themes: light by default, dark when the system asks for it, and `data-theme` on <html>
+// forces either one. The dark values are written once, in the mixin below.
+//
+// Accent: `--accent` is the only accent value; the four accent roles are mixes of it.
+// WARNING: the mix percentages and the neutral colours were chosen so that every pair in the
+// contrast table of the ui-foundation design meets WCAG 2.1 AA in both themes. Do not change
+// them, nor add an accent, without recalculating that table.
+//
+// The two `theme-color` tags in src/index.html repeat the `--color-bg` value of each theme:
+// keep them in sync.
+
+// Closed list of validated accents, selected with `data-accent="<id>"` on <html>.
+$accents: (
+  'indigo': #5856d6,
+);
+$default-accent: 'indigo';
+
+@mixin dark-theme {
+  --color-bg: #0e0e11;
+  --color-surface: #1c1c20;
+  --color-surface-raised: #27272d;
+  --color-text: #f4f3f7;
+  --color-text-secondary: #aeabb8;
+  --color-text-disabled: #6d6a77;
+  --color-border: #33333b;
+  --color-border-strong: #7d7a88;
+
+  --color-accent: color-mix(in srgb, var(--accent) 92%, #ffffff);
+  --color-accent-strong: color-mix(in srgb, var(--accent) 50%, #ffffff);
+  --color-accent-soft: color-mix(in srgb, var(--accent) 22%, var(--color-surface));
+  --color-accent-muted: color-mix(in srgb, var(--accent) 45%, var(--color-surface));
+
+  --color-success: #5fd083;
+  --color-success-fill: #2c8249;
+  --color-warning: #f5a742;
+  --color-danger: #ff7a6b;
+  --color-danger-fill: #c7463c;
+  --color-data-neutral: #4a4a54;
+
+  --shadow-floating: 0 0.25rem 1rem rgb(0 0 0 / 50%);
+}
+
+:root {
+  color-scheme: light dark;
+
+  --accent: #{map.get($accents, $default-accent)};
+
+  // Colour roles, light theme.
+  --color-bg: #f6f4f9;
+  --color-surface: #ffffff;
+  --color-surface-raised: #eeebf3;
+  --color-text: #1d1b20;
+  --color-text-secondary: #5a5663;
+  --color-text-disabled: #8e8a97;
+  --color-border: #dcd8e3;
+  --color-border-strong: #827d8c;
+
+  --color-accent: color-mix(in srgb, var(--accent) 100%, #ffffff);
+  --color-on-accent: #ffffff;
+  --color-accent-strong: color-mix(in srgb, var(--accent) 100%, #ffffff);
+  --color-accent-soft: color-mix(in srgb, var(--accent) 12%, var(--color-surface));
+  --color-accent-muted: color-mix(in srgb, var(--accent) 35%, var(--color-surface));
+  --color-focus-ring: var(--color-accent-strong);
+
+  --color-success: #1b7438;
+  --color-success-fill: #1b7438;
+  --color-on-success: #ffffff;
+  --color-warning: #955000;
+  --color-danger: #b3261e;
+  --color-danger-fill: #b3261e;
+  --color-on-danger: #ffffff;
+  --color-data-neutral: #c6c3ce;
+
+  // Not a role: the black that fills are mixed with (8 %) on hover and press. Use the
+  // `pressed-fill` mixin rather than this variable.
+  --color-shade: #000000;
+
+  // Elevation: one shadow, for what floats over the content (the navigation bar).
+  --shadow-floating: 0 0.25rem 1rem rgb(29 27 32 / 12%);
+
+  // Typography.
+  --font-family-base:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.6875rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+
+  // Spacing (4 px scale).
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  // Radii and borders.
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-card: 1.25rem;
+  --radius-pill: 62.5rem;
+  --border-width: 0.0625rem;
+
+  // Sizes.
+  --size-touch: 2.75rem;
+  --size-icon: 1.5rem;
+  --size-icon-sm: 1.25rem;
+
+  // Motion.
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-theme;
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  @include dark-theme;
+}
+
+@each $id, $value in $accents {
+  :root[data-accent='#{$id}'] {
+    --accent: #{$value};
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0s;
+    --duration-base: 0s;
+    --duration-slow: 0s;
+  }
+}

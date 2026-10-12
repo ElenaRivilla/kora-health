@@ -1,0 +1,30 @@
+@use 'mixins';
+
+:host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+.compact-select__control {
+  @include mixins.control-pill;
+  @include mixins.text-label;
+
+  max-width: 100%;
+  padding: 0 calc(var(--space-3) + var(--size-icon-sm) + var(--space-1)) 0 var(--space-3);
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+// The indicator sits over the right end of the select and lets clicks through to it.
+.compact-select__icon {
+  --ng-icon__size: var(--size-icon-sm);
+
+  position: absolute;
+  inset-inline-end: var(--space-3);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}

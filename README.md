@@ -29,17 +29,19 @@ kora-health/
     │   └── assets/config.json  # Configuración en runtime (URL base de la API)
     └── src/
         ├── main.ts             # Punto de entrada; muestra un error visible si el arranque falla
-        ├── styles.scss         # Estilos globales
+        ├── styles.scss         # Compone los parciales de styles/
+        ├── styles/             # Variables (_tokens), base, utilidades y mixins
         └── app/
             ├── app.config.ts       # Proveedores globales (router, cliente HTTP, carga de config.json)
-            ├── app.routes.ts       # Rutas: /salud, /nutricion, /entrenamiento, /progreso, /perfil
+            ├── app.routes.ts       # Rutas: /salud, /nutricion, /entrenamiento, /progreso, /perfil (y /catalogo en desarrollo)
             ├── modules/app-container/  # Pantallas por funcionalidad
-            │   ├── home/               # Armazón: cabecera, navegación de cinco secciones y contenido
+            │   ├── home/               # Armazón: cabecera, barra de navegación de cinco secciones y contenido
             │   ├── nutrition/          # Única sección con contenido: hidratación (water-tracking)
             │   ├── health/ workouts/ progress/ profile/   # Páginas vacías por ahora
-            │   └── shared/             # Componentes compartidos entre secciones
+            │   ├── catalog/            # Catálogo de componentes base (solo en desarrollo)
+            │   └── shared/components/  # Componentes base: tarjeta, botón, campo, selector compacto, mensaje de estado
             ├── services/           # Acceso a datos (base-http.service.ts, water-tracking.service.ts)
-            └── shared/             # Configuración, DTOs y helpers transversales
+            └── shared/             # Configuración, tema (ThemeService), DTOs y helpers transversales
 ```
 
 ## Backend (`kora-health-api`)
@@ -127,7 +129,19 @@ cd kora-health-client
 npm start
 ```
 
-Sirve la aplicación en `http://localhost:4200` y recarga al guardar. Está pensada para móvil: en pantallas estrechas la navegación de cinco secciones queda abajo, y a partir de 768 px de ancho sube a la cabecera.
+Sirve la aplicación en `http://localhost:4200` y recarga al guardar. Está pensada para móvil: en pantallas estrechas la navegación de cinco secciones es una barra flotante abajo, y a partir de 768 px de ancho sube a la cabecera.
+
+### Base visual: temas, acento, iconos y componentes
+
+La aplicación tiene tema claro y oscuro y sigue por defecto el del sistema. Todos los colores, tamaños y duraciones son variables CSS por papel definidas en `src/styles/_tokens.scss` (`--color-bg`, `--color-surface`, `--color-text`, `--color-accent`…); fuera de ese archivo no se escribe ningún color literal. `CLAUDE.md` explica las reglas completas.
+
+- **Catálogo de componentes**: con `npm start`, abre `http://localhost:4200/catalogo`. Muestra cada componente base en todas sus variantes y tiene tres botones para forzar el tema (sistema, claro, oscuro). Solo existe en desarrollo; el build de producción no lo incluye.
+- **Probar ambos temas**: cambia el tema del sistema operativo (la aplicación cambia sin recargar), usa los botones del catálogo, o pon a mano `data-theme="dark"` o `data-theme="light"` en `<html>` desde las herramientas del navegador. En Chrome también sirve emular `prefers-color-scheme` en DevTools (panel *Rendering*).
+- **Probar otro acento**: en DevTools, añade al `<html>` el estilo en línea `--accent: #3264c8` (o `#b82e8a`, `#217283`): cambian a la vez todos los elementos acentuados. Para que un acento sea elegible de verdad tiene que entrar en la lista `$accents` de `_tokens.scss` tras recalcular la tabla de contraste del design de `ui-foundation`.
+- **Añadir un icono**: los iconos son [Phosphor](https://phosphoricons.com) a través de `ng-icons`. Importa el que necesites del peso normal (`@ng-icons/phosphor-icons/regular`, p. ej. `phosphorPlus`) o del relleno (`@ng-icons/phosphor-icons/fill`, `phosphorPlusFill`), regístralo en los `providers` del propio componente con `provideIcons({ phosphorPlus })` y úsalo con `<ng-icon name="phosphorPlus" />`. El tamaño se fija en el SCSS con `--ng-icon__size: var(--size-icon)`; el color es el del texto. Por defecto el icono queda oculto a los lectores de pantalla.
+- **Añadir un componente base**: va en `src/app/modules/app-container/shared/components/<nombre>/` con sus cuatro archivos (`.ts`, `.html`, `.scss` y `.spec.ts`), usa solo variables y mixins (`@use 'mixins';`) y se añade al catálogo.
+
+Dependencias de interfaz: `@ng-icons/core` y `@ng-icons/phosphor-icons`, ambas en la versión exacta 36.1.0. No hay librería de componentes: los componentes base son propios.
 
 ### URL de la API
 

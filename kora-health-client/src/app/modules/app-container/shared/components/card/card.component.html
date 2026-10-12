@@ -1,0 +1,16 @@
+<section class="card" [attr.aria-labelledby]="titleId">
+  <div class="card__header">
+    <div class="card__heading">
+      <h2 class="card__title" [id]="titleId">{{ title() }}</h2>
+      @if (subtitle(); as subtitle) {
+        <p class="card__subtitle">{{ subtitle }}</p>
+      }
+    </div>
+    <div class="card__control">
+      <ng-content select="[appCardControl]" />
+    </div>
+  </div>
+  <div class="card__body">
+    <ng-content />
+  </div>
+</section>

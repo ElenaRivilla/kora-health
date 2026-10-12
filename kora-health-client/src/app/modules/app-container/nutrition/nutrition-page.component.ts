@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SectionCardComponent } from '../shared/components/section-card/section-card.component';
+import { CardComponent } from '../shared/components/card/card.component';
 import { WaterGoalSectionComponent } from './water-tracking/water-goal-section/water-goal-section.component';
 import { WaterHistorySectionComponent } from './water-tracking/water-history-section/water-history-section.component';
 import { WaterQuickLogComponent } from './water-tracking/water-quick-log/water-quick-log.component';
@@ -7,7 +7,7 @@ import { WaterTrackingStateService } from './water-tracking/water-tracking-state
 
 @Component({
   imports: [
-    SectionCardComponent,
+    CardComponent,
     WaterGoalSectionComponent,
     WaterHistorySectionComponent,
     WaterQuickLogComponent,
